@@ -50,8 +50,6 @@ npm run lint -- --fix
 
 Refer to [Documentation](https://panjiachen.github.io/vue-element-admin-site/guide/essentials/deploy.html) for more information
 
-## Demo
-
 
 
 ## Extra
@@ -60,7 +58,7 @@ If you want router permission && generate menu by user roles , you can use this 
 
 For `typescript` version, you can use [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template) (Credits: [@Armour](https://github.com/Armour))
 
-## Related Project
+## 相关项目
 
 [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
 
@@ -70,7 +68,7 @@ For `typescript` version, you can use [vue-typescript-admin-template](https://gi
 
 [vue-admin-template](https://github.com/PanJiaChen/vue-admin-template)
 
-## Browsers support
+## 浏览器支持
 
 Modern browsers and Internet Explorer 10+.
 
