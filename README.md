@@ -1,23 +1,17 @@
-# vue-admin-template
-
-English | [简体中文](./README-zh.md)
-
-> A minimal vue admin template with Element UI & axios & iconfont & permission control & lint
-
-**Live demo:** http://panjiachen.github.io/vue-admin-template
+# yypt-vue
 
 
-**The current version is `v4.0+` build on `vue-cli`. If you want to use the old version , you can switch branch to [tag/3.11.0](https://github.com/PanJiaChen/vue-admin-template/tree/tag/3.11.0), it does not rely on `vue-cli`**
+本项目基于[vue-admin-template](https://github.com/PanJiaChen/vue-admin-template)基础上进行开发
 
 ## Build Setup
 
 
 ```bash
 # clone the project
-git clone https://github.com/PanJiaChen/vue-admin-template.git
+git clone https://github.com/zhanghongke123/yypt-vue.git
 
 # enter the project directory
-cd vue-admin-template
+cd yypt-vue
 
 # install dependency
 npm install
@@ -58,7 +52,7 @@ Refer to [Documentation](https://panjiachen.github.io/vue-element-admin-site/gui
 
 ## Demo
 
-![demo](https://github.com/PanJiaChen/PanJiaChen.github.io/blob/master/images/demo.gif)
+
 
 ## Extra
 
@@ -74,6 +68,8 @@ For `typescript` version, you can use [vue-typescript-admin-template](https://gi
 
 [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template)
 
+[vue-admin-template](https://github.com/PanJiaChen/vue-admin-template)
+
 ## Browsers support
 
 Modern browsers and Internet Explorer 10+.
@@ -82,8 +78,4 @@ Modern browsers and Internet Explorer 10+.
 | --------- | --------- | --------- | --------- |
 | IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions
 
-## License
 
-[MIT](https://github.com/PanJiaChen/vue-admin-template/blob/master/LICENSE) license.
-
-Copyright (c) 2017-present PanJiaChen
