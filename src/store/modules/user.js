@@ -1,23 +1,24 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, getUserInfo, setUserInfo, getCurrentRole, setCurrentRole } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
-  name: '',
-  avatar: ''
+  userinfo: getUserInfo(),
+  currentrole: getCurrentRole()
 }
 
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_USERINFO: (state, userinfo) => {
+    state.userinfo = userinfo
   },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_CURRENTROLE: (state, role) => {
+    state.currentrole = role
   }
+
 }
 
 const actions = {
@@ -26,35 +27,24 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
+        const data = response
         commit('SET_TOKEN', data.token)
+        // 缓存用户Token
         setToken(data.token)
+        // 缓存用户信息
+        commit('SET_USERINFO', data.userinfo)
+        setUserInfo(data.userinfo)
         resolve()
       }).catch(error => {
         reject(error)
       })
     })
   },
-
-  // get user info
-  getInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
-
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
+  
+  //选择当前用户登录的角色
+  chooseRole({ commit }, role){
+     setCurrentRole(role)
+     commit('SET_CURRENTROLE',role)
   },
 
   // user logout
@@ -64,6 +54,9 @@ const actions = {
         commit('SET_TOKEN', '')
         removeToken()
         resetRouter()
+        localStorage.clear()
+        //页面刷新 重置vux
+        window.location.reload()
         resolve()
       }).catch(error => {
         reject(error)
@@ -76,6 +69,7 @@ const actions = {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
       removeToken()
+      localStorage.clear()
       resolve()
     })
   }

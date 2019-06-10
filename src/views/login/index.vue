@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">登录</h3>
       </div>
 
       <el-form-item prop="username">
@@ -13,7 +13,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
+          placeholder="用户名"
           name="username"
           type="text"
           tabindex="1"
@@ -30,7 +30,7 @@
           ref="password"
           v-model="loginForm.password"
           :type="passwordType"
-          placeholder="Password"
+          placeholder="密码"
           name="password"
           tabindex="2"
           auto-complete="on"
@@ -41,41 +41,54 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
-      <div class="tips">
+      <!-- <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
         <span> password: any</span>
-      </div>
+      </div> -->
+
+      <el-dialog title="" 
+      :visible.sync="dialogRoleVisible"
+      width="50%"
+      :before-close="handleClose"
+      :modal-append-to-body = "false">
+        <el-table 
+        :data="rolelist"
+        @current-change="chooesRole"       
+        :header-cell-style='getCellStyle'>
+          <el-table-column property="roleName" label="请选择本次登录角色" align="center"></el-table-column>
+        </el-table>
+      </el-dialog>
 
     </el-form>
   </div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+import { getUserInfo } from '@/utils/auth'
 
 export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+      if (value.length < 0) {
+        callback(new Error('用户名不能为空'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+      if (value.length < 0) {
+        callback(new Error('密码不能为空'))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -83,7 +96,10 @@ export default {
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      dialogRoleVisible:false,
+      rolelist:[],
+      currentRole:null
     }
   },
   watch: {
@@ -110,8 +126,16 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
+            let userinfo = getUserInfo()
+            this.rolelist = userinfo.roleList
+            // 多角色的话让用户选择角色 单角色的话直接进入
             this.loading = false
+            if(this.rolelist.length > 1 ){
+                this.dialogRoleVisible = true
+            }else{
+                this.$store.dispatch('user/chooseRole',rolelist[0])
+                this.$router.push({ path: this.redirect || '/' })
+            }  
           }).catch(() => {
             this.loading = false
           })
@@ -120,6 +144,28 @@ export default {
           return false
         }
       })
+    },
+    getCellStyle(){
+      return {"color":"#fff","background":"rgba(48, 65, 86, 0.86)","padding":"8","text-align":"center"}
+    },
+    handleClose(done){
+       if(this.currentRole == null){
+           this.$message({
+              showClose: true,
+              message: '您还没有选择角色，请双击角色进行选择',
+              type: 'error'
+            });
+       }else{
+         //关闭窗口
+         done()
+       }
+    },
+    //选择角色
+    chooesRole(role){
+      this.currentRole = role
+      this.dialogRoleVisible = false
+      this.$store.dispatch('user/chooseRole',role)
+      this.$router.push({ path: this.redirect || '/' })
     }
   }
 }
