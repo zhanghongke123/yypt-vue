@@ -42,3 +42,37 @@
     display: block
   }
 }
+
+.el-table th{
+  color: #606266;
+  font-weight: bold;
+  padding: 5px;
+}
+
+.el-table tr{
+  color: #606266;
+  padding: 0px;
+}
+
+
+.el-table--enable-row-hover .el-table__body tr:hover>td {
+  background-color: #eee;
+  color: #000;
+}
+
+
+
+.el-table--striped .el-table__body tr.el-table__row--striped.current-row td, 
+.el-table__body tr.current-row>td {
+  background-color: #dff0d8;
+  color: #000000;
+}
+
+
+.el-dialog__header {
+  font-size: 14px;
+}
+
+.el-dialog__body {
+  padding: 8px;
+}

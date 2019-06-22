@@ -1,5 +1,5 @@
 import { constantRoutes } from '@/router'
-import { GetMenu } from '@/api/menu'
+import { GetMenu } from '@/api/system/user'
 
 const permission = {
   state: {

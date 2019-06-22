@@ -8,6 +8,14 @@ export function login(data) {
   })
 }
 
+
+export function GetMenu(roleId) {
+  return request({
+    url: '/login/getMenu/' + roleId,
+    method: 'get'
+  })
+}
+
 export function getInfo(token) {
   return request({
     url: '/user/info',

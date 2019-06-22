@@ -15,6 +15,9 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import * as filters from './filters' // global filters
+
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -30,6 +33,11 @@ import '@/permission' // permission control
 
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
+
+// 注册全局的filter
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
 
 Vue.config.productionTip = false
 
