@@ -1,7 +1,7 @@
 <template>
   <div class="user-container">
     <div class="user-top">
-       <el-button type="success" >查询</el-button>
+       <el-button type="success" v-permission="'add'">查询</el-button>
     </div>
     <el-table :data="userlist">
 
@@ -25,6 +25,9 @@
       </el-table-column>
 
     </el-table>
+    <el-button v-for="(button,index) in buttons" :key="index">
+      {{button.name}}
+    </el-button>
   </div>
 </template>
 
@@ -35,14 +38,13 @@
     props:[''],
     data () {
       return {
-        userlist:[]
-
+        userlist:[],
+        buttons:this.$route.meta.buttons
       };
     },
 
     components: {},
 
-    computed: {},
 
     beforeMount() {},
 

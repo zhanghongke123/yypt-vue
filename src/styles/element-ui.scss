@@ -46,13 +46,20 @@
 .el-table th{
   color: #606266;
   font-weight: bold;
-  padding: 5px;
+  padding: 1px;
 }
 
 .el-table tr{
   color: #606266;
-  padding: 0px;
+  padding: 1px;
 }
+
+.el-table tr td{
+  padding: 1px;
+  font-size: 14px;
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+}
+
 
 
 .el-table--enable-row-hover .el-table__body tr:hover>td {

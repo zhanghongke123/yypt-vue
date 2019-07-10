@@ -8,6 +8,8 @@ import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 
 import '@/styles/index.scss' // global css
 
+// import ElTag from '@/components/Tag'
+
 import App from './App'
 import store from './store'
 import router from './router'
@@ -15,8 +17,12 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import permission from '@/directive/permission/index.js' // 权限判断指令
+
 import * as filters from './filters' // global filters
 
+
+Vue.use(permission)
 
 /**
  * If you don't want to use mock-server
@@ -33,6 +39,8 @@ import * as filters from './filters' // global filters
 
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
+
+// Vue.use(ElTag)
 
 // 注册全局的filter
 Object.keys(filters).forEach(key => {

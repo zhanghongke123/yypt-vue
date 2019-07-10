@@ -2,16 +2,19 @@
   <div class="app-container">
       <el-table
     :data="menutreedata"
+    ref="mastertable"
     style="width: 100%;margin-bottom: 20px;"
     row-key="menuId"
+    height="380px;"
     border
     highlight-current-row
     default-expand-all
+    v-loading="listLoading"
+    @current-change='masterChange'
     :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
 
      <el-table-column prop="menuId" label="ID" header-align="center" align="center"  min-width="100">
     </el-table-column>
-
 
     <el-table-column prop="name" label="名称" header-align="center" align="center"   min-width="120">
     </el-table-column>
@@ -33,7 +36,7 @@
 
     <el-table-column prop="type" label="类型" header-align="center" align="center"  sortable min-width="100">
       <template slot-scope="scope">
-        <el-tag effect="dark" :type='scope.row.type == 1?"success":""'>{{ scope.row.type | getValueText('typedict') }}</el-tag>
+        {{ scope.row.component | getValueText('typedict') }}
       </template>
     </el-table-column>
 
@@ -47,37 +50,36 @@
     <el-table-column prop="modifyDate" label="修改日期" header-align="center" align="center"  sortable width="180">
     </el-table-column>
 
-     <el-table-column fixed="right" align="center" label="操作" min-width="220">
+     <el-table-column fixed="right" align="center" label="操作" min-width="250">
       <template slot-scope="scope">
         <el-button
-          size="mini"
-          @click="handleAdd(scope.$index, scope.row)">添加</el-button>
+          size="mini" type="text"
+          @click="handleAdd(scope.$index, scope.row)">添加子级</el-button>
         <el-button
-          size="mini"
+          size="mini" type="text"
+          @click="handleAddButton(scope.$index, scope.row)">添加按钮</el-button>
+        <el-button
+          size="mini" type="text"
           @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
         <el-button
-          size="mini"
-          type="danger"
+          size="mini" type="text"
           @click="handleDelete(scope.$index, scope.row)">删除</el-button>
       </template>
     </el-table-column>
   </el-table>
 
-
-
-
-  <el-dialog :title='dialogTitle' :visible.sync="dialogVisible">
+   <el-dialog :title='dialogTitle' :visible.sync="dialogVisible">
       <el-dialog
       width="80%"
       title="选择菜单的图标"
-      :visible.sync="iconVisible"
+      :visible.sync="menuiconVisible"
       :modal-append-to-body = "false"
       append-to-body >
-          <IconLib @getIcon='getIcon'></IconLib>
+          <IconLib @getIcon='getMenuIcon'></IconLib>
      </el-dialog>
      
 
-    <el-form :model="menu" label-width="80px" size='small'>
+    <el-form :model="menu" ref="menuForm" :rules="rules" label-width="80px" size='small'>
       <el-row >
          <el-col :span="12">
             <el-form-item prop="name" label="名称:">
@@ -91,7 +93,7 @@
                       <svg-icon :icon-class="menu.icon"></svg-icon>
                   </el-col>
                   <el-col :span="12">
-                      <el-button  type="text" @click="iconVisible = true">选择图标</el-button>
+                      <el-button  type="text" @click="menuiconVisible = true">选择图标</el-button>
                   </el-col>
                 </el-row>
             </el-form-item>
@@ -102,7 +104,7 @@
        <el-row >
          <el-col :span="12">
             <el-form-item prop="type" label="类型:">
-                <el-select v-model="menu.type" >
+                <el-select v-model="menu.type" :disabled="ismenuedit == true" >
                     <el-option
                       v-for="item in typedict"
                       :key="item.key"
@@ -136,8 +138,122 @@
     </el-form>
 
     <div slot="footer" class="dialog-footer" style="text-align:center">
-      <el-button @click="dialogFormVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogFormVisible = false">保存</el-button>
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="handSave()">保存</el-button>
+    </div>  
+  </el-dialog>
+
+
+
+<!-- 子单部分 -->
+  <el-table
+    :data="buttondata"
+    style="width: 100%;margin-bottom: 20px;"
+    row-key="buttonId"
+    border
+    highlight-current-row
+    height="200px;"
+    v-loading="buttonlistLoading">
+
+     <el-table-column prop="buttonId" label="ID" header-align="center" align="center"  min-width="100">
+    </el-table-column>
+
+
+    <el-table-column prop="name" label="名称" header-align="center" align="center"   min-width="120">
+    </el-table-column>
+
+    <el-table-column prop="requestPath" label="请求路径" header-align="center" align="center"  sortable min-width="120">
+    </el-table-column>
+
+
+    <el-table-column   prop="icon" label="图标" class-name="icon-column" header-align="center" align="center"   min-width="80">
+      <template slot-scope="scope">
+          <svg-icon :icon-class="scope.row.icon"></svg-icon>
+      </template>
+    </el-table-column>
+
+    <el-table-column prop="permission" label="权限" header-align="center" align="center"   min-width="100">
+    </el-table-column>
+
+    <el-table-column prop="menuId" label="功能ID" header-align="center" align="center"  sortable min-width="100">
+    </el-table-column>
+
+    <el-table-column prop="createDate" label="创建日期" header-align="center" align="center"  sortable width="180">
+    </el-table-column>
+
+
+    <el-table-column prop="modifyDate" label="修改日期" header-align="center" align="center"  sortable width="180">
+    </el-table-column>
+
+     <el-table-column fixed="right" align="center" label="操作" min-width="220">
+      <template slot-scope="scope">
+        <el-button
+          size="mini" type="text"
+          @click="handleButtonEdit(scope.$index, scope.row)">编辑</el-button>
+        <el-button
+          size="mini" type="text"
+          @click="handleButtonDelete(scope.$index, scope.row)">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+
+  
+
+
+  <el-dialog :title='dialogTitle' :visible.sync="buttondialogVisible">
+      <el-dialog
+      width="80%"
+      title="选择菜单的图标"
+      :visible.sync="buttoniconVisible"
+      :modal-append-to-body = "false"
+      append-to-body >
+          <IconLib @getIcon='getMenuButtonIcon'></IconLib>
+     </el-dialog>
+     
+
+    <el-form :model="menubutton" ref="menubuttonForm" :rules="buttonrules" label-width="80px" size='small'>
+      <el-row >
+         <el-col :span="12">
+            <el-form-item prop="name" label="名称:">
+              <el-input v-model="menubutton.name"></el-input>
+            </el-form-item>
+         </el-col>
+         <el-col :span="12">
+            <el-form-item prop="icon" label="图标:">
+                <el-row>
+                  <el-col :span="12" style="text-align:center">
+                      <svg-icon :icon-class="menubutton.icon"></svg-icon>
+                  </el-col>
+                  <el-col :span="12">
+                      <el-button  type="text" @click="buttoniconVisible = true">选择图标</el-button>
+                  </el-col>
+                </el-row>
+            </el-form-item>
+         </el-col>
+      </el-row>
+
+      
+      <el-row>
+        <el-col :span="12">
+          <el-form-item prop="requestPath" label="请求路径:">
+            <el-input v-model="menubutton.requestPath"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item prop="orderCode" label="排序号:">
+            <el-input v-model="menubutton.orderCode"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-form-item prop="permission" label="权限:">
+        <el-input v-model="menubutton.permission"></el-input>
+      </el-form-item> 
+    </el-form>
+
+    <div slot="footer" class="dialog-footer" style="text-align:center">
+      <el-button @click="buttondialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="handButtonSave()">保存</el-button>
     </div>  
   </el-dialog>
 
@@ -147,7 +263,8 @@
 
 <script>
 import IconLib from '@/components/IconLib'
-import { getMenuTree } from '@/api/system/menu'
+import { getMenuTree, save, del, getMenuButtons, delButton, saveButton } from '@/api/system/menu'
+import { deepClone } from '@/utils'
 
 const defaultmenu = {
       menuId:null,
@@ -156,16 +273,28 @@ const defaultmenu = {
       parentid:null,
       orderCode:null,
       name:null,
-      icon:'user',
+      icon:'',
       permission:null,
       type:1,
       createDate:null,
       modifyDate:null
 }
 
+const defaultmenuButton = {
+      buttonId:null,
+      name:null,
+      requestPath:null,
+      icon:'',
+      orderCode:null,
+      menuId:null,
+      permission:'',
+      createDate:null,
+      modifyDate:null
+}
+
 const typedict = [
-  { key: 1, label: "菜单" },
-  { key: 2, label: "按钮" }
+  { key: 1, label: "目录" },
+  { key: 2, label: "功能" }
 ]
 
 
@@ -177,45 +306,181 @@ const typedict = [
     data () {
       return {
         menutreedata:[],
-        isedit:false,
-        typedict:typedict,
-        dialogVisible:false,
-        iconVisible:false,
+        buttondata:[],
+        buttonlistLoading: true,
+        listLoading: true,
+        ismenuedit: false,
+        isbuttonedit: false,
+        typedict: typedict,
+        dialogVisible: false,
+        buttondialogVisible: false,
+        menuiconVisible: false,
+        buttoniconVisible: false,
         dialogTitle:'',
         menu:Object.assign({}, defaultmenu),
+        menubutton: Object.assign({},defaultmenuButton),
+        rules: {
+            name: [{ required: true, message: '名称不能为空', trigger: 'change' }],
+        },
+        buttonrules: {
+            name: [{ required: true, message: '名称不能为空', trigger: 'change' }],
+        }
       };
     },
 
-    mounted() {
+    created() {
       this.fetchData()
     },
 
     methods: {
       fetchData(){
+        this.listLoading = true
         getMenuTree().then(data =>{
-           this.menutreedata = data
+          this.menutreedata = data
+          this.listLoading = false
+          this.$refs.mastertable.setCurrentRow(this.menutreedata[0])
         })
       },
-      getIcon(icon){
-        console.log("---"+icon)
+      fetchMenuButton(menuId){
+        this.buttonlistLoading = true
+        const req = {
+          "menuId": menuId
+        }
+        getMenuButtons(req).then(data =>{
+          this.buttondata = data
+          this.buttonlistLoading = false
+        }) 
+      },
+      masterChange(currentRow, oldCurrentRow){
+        this.fetchMenuButton(currentRow.menuId)
+      },
+      getMenuIcon(icon){
         this.menu.icon = icon
-        this.iconVisible = false
+        this.menuiconVisible = false
+      },
+      getMenuButtonIcon(icon){
+        this.menubutton.icon = icon
+        this.buttoniconVisible = false
       },
       handleAdd(index, menudata){
+        this.ismenuedit = false
+        this.menu = Object.assign({},defaultmenu)
+        this.menu.parentid = menudata.menuId
         this.dialogVisible = true;
         this.dialogTitle = `添加 【${menudata.name}】 的子级`
+        this.dialogVisible
+        this.$nextTick(() => {
+        this.$refs['menuForm'].clearValidate()
+        })  
       },
+      handleEdit(index, menudata){
+        this.ismenuedit = true
+        this.menu = deepClone(menudata)
+        if( this.menu.components == 'Layout' ){
+            this.menu.type = 1
+        }else{
+            this.menu.type = 2
+        }
+        this.dialogTitle = `修改 【${menudata.name} - ${menudata.menuId}】`
+        this.dialogVisible = true
+        this.$nextTick(() => {
+        this.$refs['menuForm'].clearValidate()
+        })
+      },
+      handleDelete(index, menudata){
+        this.$confirm(`是否删除【${menudata.name}】以及它的所有子级`, '警告', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(async() => {
+					await del(menudata)
+					this.$message({
+						type: 'success',
+						message: '删除成功'
+					})
+          //添加菜单的话需要刷新总单
+          this.fetchData()
+				}).catch(err => {
+					console.error(err)
+				})
+      },
+      handSave(){
+        this.$refs['menuForm'].validate((valid) =>{
+          if(valid){
+             save(this.menu).then(resp => {
+               this.$message({
+                 type:'success',
+                 message: '保存成功'
+               })
+               this.dialogVisible = false
+               this.fetchData()
+             }).catch(error =>{
+               console.error(error)
+             })
+          }
+        })
 
+      },
+      handleAddButton(index, menudata){
+        this.isbuttonedit = false
+        this.menubutton = Object.assign({},defaultmenuButton)
+        this.menubutton.menuId = menudata.menuId
+        this.buttondialogVisible = true;
+        this.dialogTitle = `添加 【${menudata.name}】 的按钮`
+        this.$nextTick(() => {
+        this.$refs['menubuttonForm'].clearValidate()
+        })  
+      },
+      handleButtonEdit(index, buttondata){
+        this.isbuttonedit = true
+        this.menubutton = deepClone(buttondata)
+        this.dialogTitle = `修改 【${buttondata.name}】`
+        this.buttondialogVisible = true
+        this.$nextTick(() => {
+        this.$refs['menubuttonForm'].clearValidate()
+        })
+      },
+      handleButtonDelete(index, buttondata){
+        this.$confirm(`是否删除【${buttondata.name}】`, '警告', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(async() => {
+					await delButton(buttondata)
+					this.$message({
+						type: 'success',
+						message: '删除成功'
+					})
+          //添加菜单的话需要刷新总单
+          this.fetchMenuButton(buttondata.menuId)
+				}).catch(err => {
+					console.error(err)
+				})
+      },
+      handButtonSave(){
+        this.$refs['menubuttonForm'].validate((valid) =>{
+          if(valid){
+             saveButton(this.menubutton).then(resp => {
+               this.$message({
+                 type:'success',
+                 message: '保存按钮成功'
+               })
+               this.buttondialogVisible = false
+               this.fetchMenuButton(this.menubutton.menuId)
+             }).catch(error =>{
+               console.error(error)
+             })
+          }
+        })
+      },
     },
 
     filters:{
       getValueText(value,varname){
-        var aa = eval(varname)
-        for(var i = 0; i < aa.length; i++){
-            let item = aa[i]
-            if(item.key == value){
-                return item.label
-            }
+        if(value == 'Layout'){
+           return "目录"
+        }else{
+          return  "功能"
         }
       } 
     }

@@ -8,6 +8,8 @@ import getPageTitle from '@/utils/get-page-title'
 import { initMenu } from '@/utils/util'
 import { validatenull } from '@/utils/validate'
 
+ 
+
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -34,7 +36,6 @@ router.beforeEach(async(to, from, next) => {
         const getmenuflag = store.getters.getmenuflag
         // 判断是否有角色信息
         if (!validatenull(currentrole) && getmenuflag == 0) {
-         console.log("获取角色权限信息")
          let routerdata =  await store.dispatch('getMenu', currentrole.roleId)
          initMenu(router, routerdata)
          next({ ...to, replace: true })

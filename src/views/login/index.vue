@@ -209,6 +209,14 @@ $cursor: #fff;
     }
   }
 
+  .el-table .cell{
+    line-height: 40px;
+    padding: 6px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    font-size: 16px;
+  }
+
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.1);
@@ -222,6 +230,11 @@ $cursor: #fff;
 $bg:#2d3a4b;
 $dark_gray:#889aa4;
 $light_gray:#eee;
+
+.el-table__row{
+  color: #606266;
+  padding: 3px;
+}
 
 .login-container {
   min-height: 100%;

@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getMenuTree(){
+export function list(){
     return  request({
-        url:'/sysmenu',
+        url:'/sysmenubutton/list',
         method: 'post'
     })
 }
@@ -32,20 +32,3 @@ export function getMenuButtons(data){
     })
 }
 
-
-export function delButton(data){
-    return request({
-        url:'/sysmenubutton/del',
-        method: 'post',
-        data
-    })
-}
-
-
-export function saveButton(data){
-    return request({
-        url:'/sysmenubutton/save',
-        method: 'post',
-        data
-    })
-}

@@ -6,10 +6,8 @@ import store from '../store'
       return
     }
     let menus = []
-    console.log(menu)
     menus = formatRoutes(menu)
     router.addRoutes(menus)
-    console.log(menus)
     store.commit('SET_ROUTERS', menus)
   }
   
