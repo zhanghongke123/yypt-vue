@@ -10,6 +10,26 @@ export function list(data){
 
 }
 
+
+export function saveRole(data){
+    return request({
+        url:'/sysrole/save',
+        method:'post',
+        data
+    })
+
+}
+
+
+export function delRole(data){
+    return request({
+        url:'/sysrole/del',
+        method:'post',
+        data
+    })
+
+}
+
 export function getMenuTree(){
     return  request({
         url:'/sysrole/menutree',
@@ -40,6 +60,26 @@ export function getRoleButtons(data){
 export function saveRoleButtons(data){
     return request({
         url:'/sysrole/saveRoleButtons',
+        method: 'post',
+        data
+    })
+}
+
+
+
+export function getRoleUsers(data){
+    return request({
+        url:'/sysrole/getRoleUsers',
+        method: 'post',
+        data
+    })
+}
+
+
+
+export function delRoleUser(data){
+    return request({
+        url:'/sysrole/delRoleUser',
         method: 'post',
         data
     })

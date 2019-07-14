@@ -133,7 +133,7 @@ export default {
             if(this.rolelist.length > 1 ){
                 this.dialogRoleVisible = true
             }else{
-                this.$store.dispatch('user/chooseRole',rolelist[0])
+                this.$store.dispatch('user/chooseRole',this.rolelist[0])
                 this.$router.push({ path: this.redirect || '/' })
             }  
           }).catch(() => {

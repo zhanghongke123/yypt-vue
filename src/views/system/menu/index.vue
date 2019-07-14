@@ -1,72 +1,141 @@
 <template>
   <div class="app-container">
-      <el-table
-    :data="menutreedata"
-    ref="mastertable"
-    style="width: 100%;margin-bottom: 20px;"
-    row-key="menuId"
-    height="380px;"
-    border
-    highlight-current-row
-    default-expand-all
-    v-loading="listLoading"
-    @current-change='masterChange'
-    :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
 
-     <el-table-column prop="menuId" label="ID" header-align="center" align="center"  min-width="100">
-    </el-table-column>
+    <el-row>
+      <!-- 左边 （树形区域）-->
+      <el-col :span="4">
+         <el-tree ref="menutree" node-key="menuId" :data="menutreedata" :highlight-current="true" :props="menuTreeProp" @node-click='nodeclick' default-expand-all></el-tree>
+      </el-col>
 
-    <el-table-column prop="name" label="名称" header-align="center" align="center"   min-width="120">
-    </el-table-column>
+      <!-- 右部分（表格部分） -->
+      <el-col :span="20">
+      <!-- 总单部分 -->
+          <el-table
+            :data="menutreedata"
+            ref="mastertable"
+            style="width: 100%;margin-bottom: 20px;"
+            row-key="menuId"
+            height="45vh"
+            border
+            highlight-current-row
+            default-expand-all
+            v-loading="listLoading"
+            @current-change='masterChange'
+            :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
 
-    <el-table-column prop="path" label="路径" header-align="center" align="center"  sortable min-width="120">
-    </el-table-column>
+            <el-table-column prop="menuId" label="ID" header-align="center" align="center"  min-width="100">
+            </el-table-column>
 
-    <el-table-column prop="component" label="组件名称" header-align="center" align="center"  sortable min-width="120">
-    </el-table-column>
+            <el-table-column prop="name" label="名称" header-align="center" align="center"   min-width="120">
+            </el-table-column>
 
-    <el-table-column   prop="icon" label="图标" class-name="icon-column" header-align="center" align="center"   min-width="80">
-      <template slot-scope="scope">
-          <svg-icon :icon-class="scope.row.icon"></svg-icon>
-      </template>
-    </el-table-column>
+            <el-table-column prop="path" label="路径" header-align="center" align="center"  sortable min-width="120">
+            </el-table-column>
 
-    <el-table-column prop="permission" label="权限" header-align="center" align="center"   min-width="100">
-    </el-table-column>
+            <el-table-column prop="component" label="组件名称" header-align="center" align="center"  sortable min-width="120">
+            </el-table-column>
 
-    <el-table-column prop="type" label="类型" header-align="center" align="center"  sortable min-width="100">
-      <template slot-scope="scope">
-        {{ scope.row.component | getValueText('typedict') }}
-      </template>
-    </el-table-column>
+            <el-table-column   prop="icon" label="图标" class-name="icon-column" header-align="center" align="center"   min-width="80">
+              <template slot-scope="scope">
+                  <svg-icon :icon-class="scope.row.icon"></svg-icon>
+              </template>
+            </el-table-column>
 
-    <el-table-column prop="parentid" label="父级ID" header-align="center" align="center"  sortable min-width="100">
-    </el-table-column>
+            <el-table-column prop="permission" label="权限" header-align="center" align="center"   min-width="100">
+            </el-table-column>
 
-    <el-table-column prop="createDate" label="创建日期" header-align="center" align="center"  sortable width="180">
-    </el-table-column>
+            <el-table-column prop="type" label="类型" header-align="center" align="center"  sortable min-width="100">
+              <template slot-scope="scope">
+                {{ scope.row.component | getValueText('typedict') }}
+              </template>
+            </el-table-column>
+
+            <el-table-column prop="parentid" label="父级ID" header-align="center" align="center"  sortable min-width="100">
+            </el-table-column>
+
+            <el-table-column prop="createDate" label="创建日期" header-align="center" align="center"  sortable width="180">
+            </el-table-column>
 
 
-    <el-table-column prop="modifyDate" label="修改日期" header-align="center" align="center"  sortable width="180">
-    </el-table-column>
+            <el-table-column prop="modifyDate" label="修改日期" header-align="center" align="center"  sortable width="180">
+            </el-table-column>
 
-     <el-table-column fixed="right" align="center" label="操作" min-width="250">
-      <template slot-scope="scope">
-        <el-button
-          size="mini" type="text"
-          @click="handleAdd(scope.$index, scope.row)">添加子级</el-button>
-        <el-button
-          size="mini" type="text"
-          @click="handleAddButton(scope.$index, scope.row)">添加按钮</el-button>
-        <el-button
-          size="mini" type="text"
-          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-        <el-button
-          size="mini" type="text"
-          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-      </template>
-    </el-table-column>
-  </el-table>
+            <el-table-column fixed="right" align="center" label="操作" min-width="250">
+              <template slot-scope="scope">
+                <el-button
+                  size="mini" type="text"
+                  @click="handleAdd(scope.$index, scope.row)">添加子级</el-button>
+                <el-button
+                  size="mini" type="text"
+                  @click="handleAddButton(scope.$index, scope.row)">添加按钮</el-button>
+                <el-button
+                  size="mini" type="text"
+                  @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                <el-button
+                  size="mini" type="text"
+                  @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+
+
+            <!-- 细单部分 -->
+
+          <el-table
+          :data="buttondata"
+          style="width: 100%;margin-bottom: 20px;"
+          row-key="buttonId"
+          border
+          highlight-current-row
+          height="30vh"
+          v-loading="buttonlistLoading">
+
+            <el-table-column prop="buttonId" label="ID" header-align="center" align="center"  min-width="100">
+            </el-table-column>
+
+
+            <el-table-column prop="name" label="名称" header-align="center" align="center"   min-width="120">
+            </el-table-column>
+
+            <el-table-column prop="requestPath" label="请求路径" header-align="center" align="center"  sortable min-width="120">
+            </el-table-column>
+
+
+            <el-table-column   prop="icon" label="图标" class-name="icon-column" header-align="center" align="center"   min-width="80">
+              <template slot-scope="scope">
+                  <svg-icon :icon-class="scope.row.icon"></svg-icon>
+              </template>
+            </el-table-column>
+
+            <el-table-column prop="permission" label="权限" header-align="center" align="center"   min-width="100">
+            </el-table-column>
+
+            <el-table-column prop="menuId" label="功能ID" header-align="center" align="center"  sortable min-width="100">
+            </el-table-column>
+
+            <el-table-column prop="createDate" label="创建日期" header-align="center" align="center"  sortable width="180">
+            </el-table-column>
+
+
+            <el-table-column prop="modifyDate" label="修改日期" header-align="center" align="center"  sortable width="180">
+            </el-table-column>
+
+            <el-table-column fixed="right" align="center" label="操作" min-width="220">
+              <template slot-scope="scope">
+                <el-button
+                  size="mini" type="text"
+                  @click="handleButtonEdit(scope.$index, scope.row)">编辑</el-button>
+                <el-button
+                  size="mini" type="text"
+                  @click="handleButtonDelete(scope.$index, scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+        </el-table>
+
+
+      </el-col>
+    </el-row>
+    
 
    <el-dialog :title='dialogTitle' :visible.sync="dialogVisible">
       <el-dialog
@@ -141,65 +210,11 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
       <el-button type="primary" @click="handSave()">保存</el-button>
     </div>  
-  </el-dialog>
+   </el-dialog>
 
 
 
 <!-- 子单部分 -->
-  <el-table
-    :data="buttondata"
-    style="width: 100%;margin-bottom: 20px;"
-    row-key="buttonId"
-    border
-    highlight-current-row
-    height="200px;"
-    v-loading="buttonlistLoading">
-
-     <el-table-column prop="buttonId" label="ID" header-align="center" align="center"  min-width="100">
-    </el-table-column>
-
-
-    <el-table-column prop="name" label="名称" header-align="center" align="center"   min-width="120">
-    </el-table-column>
-
-    <el-table-column prop="requestPath" label="请求路径" header-align="center" align="center"  sortable min-width="120">
-    </el-table-column>
-
-
-    <el-table-column   prop="icon" label="图标" class-name="icon-column" header-align="center" align="center"   min-width="80">
-      <template slot-scope="scope">
-          <svg-icon :icon-class="scope.row.icon"></svg-icon>
-      </template>
-    </el-table-column>
-
-    <el-table-column prop="permission" label="权限" header-align="center" align="center"   min-width="100">
-    </el-table-column>
-
-    <el-table-column prop="menuId" label="功能ID" header-align="center" align="center"  sortable min-width="100">
-    </el-table-column>
-
-    <el-table-column prop="createDate" label="创建日期" header-align="center" align="center"  sortable width="180">
-    </el-table-column>
-
-
-    <el-table-column prop="modifyDate" label="修改日期" header-align="center" align="center"  sortable width="180">
-    </el-table-column>
-
-     <el-table-column fixed="right" align="center" label="操作" min-width="220">
-      <template slot-scope="scope">
-        <el-button
-          size="mini" type="text"
-          @click="handleButtonEdit(scope.$index, scope.row)">编辑</el-button>
-        <el-button
-          size="mini" type="text"
-          @click="handleButtonDelete(scope.$index, scope.row)">删除</el-button>
-      </template>
-    </el-table-column>
-  </el-table>
-
-  
-
-
   <el-dialog :title='dialogTitle' :visible.sync="buttondialogVisible">
       <el-dialog
       width="80%"
@@ -324,6 +339,10 @@ const typedict = [
         },
         buttonrules: {
             name: [{ required: true, message: '名称不能为空', trigger: 'change' }],
+        },
+        menuTreeProp:{
+          children:'children',
+          label: 'name'
         }
       };
     },
@@ -353,6 +372,9 @@ const typedict = [
       },
       masterChange(currentRow, oldCurrentRow){
         this.fetchMenuButton(currentRow.menuId)
+        if(currentRow != null && currentRow != undefined){
+          this.$refs['menutree'].setCurrentKey(currentRow.menuId)
+        }
       },
       getMenuIcon(icon){
         this.menu.icon = icon
@@ -473,6 +495,9 @@ const typedict = [
           }
         })
       },
+      nodeclick(data, node, nodedata){
+          this.$refs['mastertable'].setCurrentRow(data)
+      }
     },
 
     filters:{
@@ -489,6 +514,9 @@ const typedict = [
 
 </script>
 <style lang='scss' scoped>
+.app-container{
+  height: 90vh;
+}
 .svg-icon{
  width: 20px;
  height: 20px;

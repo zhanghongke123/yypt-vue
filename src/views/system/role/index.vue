@@ -2,40 +2,67 @@
   <div class="app-container" >
       <el-row>
           <el-col :span="14">
-              <svg-icon icon-class="role"/>
-              <el-button type="primary" plain size="small" @click="fetchData()" v-permission='"bb"'>刷新</el-button>
-              <el-button type="primary" size="small" plain
-                            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button type="primary" size="small" plain 
-                            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-              <el-table ref="roletable" height="600" style="width: 100%;margin-top: 10px;" v-loading="listLoading" :data="roledata"
-                        row-key="roleId" border highlight-current-row @current-change="rowchange">
-                    <el-table-column prop="roleId" label="ID" header-align="center" align="center"  min-width="100">
-                    </el-table-column>
+              <yypt-button v-permission='"role:add"' permission='role:add' @click="click('新增')"></yypt-button>
+              <yypt-button v-permission='"role:edit"' permission='role:edit' @click="click('修改')"></yypt-button>
+              <yypt-button v-permission='"role:delete"' permission='role:delete' @click="click('删除')"></yypt-button>
 
-                    <el-table-column prop="roleName" label="角色名称" header-align="center" align="center"  min-width="150">
-                    </el-table-column>
+              <el-button type="primary" plain size="small" @click="fetchData()" >刷新</el-button>
+              <!-- 角色对应的table -->
+              <div class = "roletable">
+                <el-table ref="roletable" height="35vh" style="width: 100%;margin-top: 10px;" v-loading="listLoading" :data="roledata"
+                            row-key="roleId" border highlight-current-row @current-change="rowchange">
+                        <el-table-column prop="roleId" label="ID" header-align="center" align="center"  min-width="100">
+                        </el-table-column>
 
-                    <el-table-column prop="roleCode" label="排序" header-align="center" align="center"  min-width="80">
-                    </el-table-column>
+                        <el-table-column prop="roleName" label="角色名称" header-align="center" align="center"  min-width="150">
+                        </el-table-column>
 
-                    <el-table-column prop="createDate" label="创建日期" header-align="center" align="center"  min-width="180">
-                    </el-table-column>
+                        
+                        <el-table-column prop="roleCode" label="排序" header-align="center" align="center"  min-width="80">
+                        </el-table-column>
 
-                    <el-table-column prop="modifyDate" label="修改日期" header-align="center" align="center"  min-width="180">
-                    </el-table-column>
+                        <el-table-column prop="memo" label="备注" header-align="center" align="center"  min-width="300">
+                        </el-table-column>
+
+                        <el-table-column prop="createDate" label="创建日期" header-align="center" align="center"  min-width="180">
+                        </el-table-column>
+
+                        <el-table-column prop="modifyDate" label="修改日期" header-align="center" align="center"  min-width="180">
+                        </el-table-column>
+
+                </el-table>
+              </div>
+
+              <!-- 角色人员对应的table-->
+              <div class="roleusertable">
+                <div class="roleuserbutton">
+                     <yypt-button v-permission='"role:authuser"' permission='role:authuser' @click="click('授权人员')" ></yypt-button>
+                     <yypt-button v-permission='"role:deleteroleuser"' permission='role:deleteroleuser' @click="click('删除角色人员')" ></yypt-button>
+                </div>
+             
+
+                <el-table ref="roleusertable" height="40vh" style="width: 100%;margin-top: 10px;" v-loading="userlistLoading" :data="roleuserdata"
+                            row-key="roleUserId" border highlight-current-row @current-change="userrowchange">
+                        <el-table-column prop="roleUserId" label="ID" header-align="center" align="center"  min-width="100">
+                        </el-table-column>
+
+                        <el-table-column prop="userName" label="用户名称" header-align="center" align="center"  min-width="150">
+                        </el-table-column>
+
+                        
+                        <el-table-column prop="userId" label="用户ID" header-align="center" align="center"  min-width="80">
+                        </el-table-column>
+
+                        <el-table-column prop="roleId" label="角色ID" header-align="center" align="center"  min-width="80">
+                        </el-table-column>
+
+                        <el-table-column prop="createDate" label="创建日期" header-align="center" align="center"  min-width="180">
+                        </el-table-column>
+
+                </el-table>
+              </div>
 
 
-                    <!-- <el-table-column  :check-strictly="true" fixed="right" align="center" label="操作" min-width="200">
-                        <template slot-scope="scope">
-                            <el-button size="small" type="text"
-                            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                            <el-button size="small" type="text" 
-                            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                        </template>
-                    </el-table-column> -->
-
-              </el-table>
           </el-col>
           <el-col :span="5" class="menu-panel">
               <div class="menu-text">
@@ -59,7 +86,8 @@
               <div style="margin-left:10px;" v-if="menubuttons != undefined && menubuttons.length > 0">
                 <el-button size="mini" type="primary" plain :loading="savebuttoning" @click="saveRoleButtons">保存{{currentNode.label}}按钮信息</el-button>
               </div>
-              <el-checkbox-group v-model="buttonlist" >
+              <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange" v-if="menubuttons != undefined && menubuttons.length > 0">全选</el-checkbox>
+              <el-checkbox-group v-model="buttonlist" @change="handleCheckedButtonChange">
                     <el-checkbox style="width:100%" v-for="button in menubuttons" :key="'check'+ button.buttonId" 
                     :label="button.buttonId"  >{{ button.name + "(" +button.permission+")"  }}</el-checkbox>
                </el-checkbox-group>
@@ -67,21 +95,41 @@
           </el-col>
 
       </el-row>
-      <el-dialog >
+      <el-dialog title="添加角色" :visible.sync="dialogRoleVisible" >
+          <el-form :model="role" ref="roleForm"  :rules="rules" label-width="80px" size='small'>
+              <el-form-item prop="roleName" label="角色名称">
+                  <el-input v-model="role.roleName"></el-input>
+              </el-form-item>
+              <el-form-item prop="roleCode" label="角色编码">
+                  <el-input v-model="role.roleCode"></el-input>
+              </el-form-item>
+
+              <el-form-item prop="memo" label="备注">
+                  <el-input v-model="role.memo"></el-input>
+              </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer" style="text-align:center">
+            <el-button @click="dialogRoleVisible = false">取 消</el-button>
+            <el-button type="primary" @click="handRoleSave()">保存</el-button>
+          </div> 
 
       </el-dialog>
   </div>
 </template>
 
 <script>
-import { list, getMenuTree, saveRoleMenu, getRoleButtons, saveRoleButtons } from '@/api/system/role'
+import { list, getMenuTree, saveRoleMenu, getRoleButtons,
+        saveRoleButtons, saveRole, delRole, getRoleUsers, delRoleUser } from '@/api/system/role'
 import { getMenuButtons } from '@/api/system/menu'
 import { validatenull } from '@/utils/validate'
+import { deepClone } from '@/utils'
+
 
 const defaultrole = {
       roleId:null,
       roleName:'',
-      roleCode:null
+      roleCode:null,
+      memo:''
 }
 
   export default {
@@ -106,7 +154,18 @@ const defaultrole = {
           allmenu:[],
           allbutton:[],
           menubuttons:[],
-          rolebuttons:{}
+          rolebuttons:{},
+          dialogRoleVisible:false,
+          roleEdit:false,
+          rules:{
+              roleName: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }]
+          },
+          userlistLoading:false,
+          roleuserdata:[],
+          roleuser:{},
+          checkAll: false,
+          isIndeterminate: true
+          
       };
     },
 
@@ -117,6 +176,79 @@ const defaultrole = {
       this.fetchData()
     },
     methods: {
+        click(command){
+          //获取当前选中的角色
+          let currentRole = this.role
+          if(command == "新增"){
+             this.roleEdit = false
+             this.role = Object.assign({},defaultrole)
+             this.dialogRoleVisible = true
+             this.$nextTick(() => {
+                this.$refs['roleForm'].clearValidate()
+             })  
+
+          }else if(command == "修改"){
+             this.roleEdit = true
+             this.dialogRoleVisible = true
+             this.$nextTick(() => {
+                this.$refs['roleForm'].clearValidate()
+             })              
+          }else if(command == "删除"){
+            this.$confirm(`是否删除【${this.role.roleName}】`, '警告', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(async() => {
+                        await delRole(this.role)
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功'
+                        })
+                        this.updateData(true)
+                    }).catch(err => {
+                        console.error(err)
+                    })   
+          }else if(command == "授权人员"){
+
+          }else if(command == "删除角色人员"){
+            this.$confirm(`是否删除【${this.roleuser.userName}】`, '警告', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(async() => {
+                        await delRoleUser(this.roleuser)
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功'
+                        })
+                        this.getRoleUsers(this.role.roleId)
+                    }).catch(err => {
+                        console.error(err)
+                    })               
+          }
+        },
+        handRoleSave(){
+            this.$refs['roleForm'].validate((vail) => {
+                if(vail){
+                  saveRole(this.role).then(data =>{
+                        this.$message({
+                            type:'success',
+                            message: '保存成功'
+                        })
+                        this.role = data
+                        if(this.roleEdit){
+                           this.updateData(false)
+                        }else{
+                           this.roledata.push(this.role)
+                        }
+                        this.dialogRoleVisible = false
+                            
+                    }).catch( error =>{
+                        console.error(error)
+                    })
+                }
+            })
+        },
         fetchData(){
             this.listLoading = true
             list({}).then(data =>{
@@ -142,8 +274,22 @@ const defaultrole = {
                this.rolebuttons = data
            })
         },
+        //获取角色用户
+        async getRoleUsers(roleId){
+             const req = {
+               roleId:roleId
+              }
+              this.userlistLoading = true
+            await getRoleUsers(req).then(data =>{
+               this.roleuserdata = data
+               this.userlistLoading = false
+                if(this.roleuserdata.length > 0){
+                    this.$refs['roleusertable'].setCurrentRow(this.roleuserdata[0])
+                }
+           })
+        },
         rowchange(currentRow,oldCurrentRow){
-            this.role = currentRow
+            this.role = deepClone(currentRow)
             this.menubuttons = []
             this.buttonlist = []
             this.currentNode = {}
@@ -180,12 +326,15 @@ const defaultrole = {
                this.selectMenus = res
             }
             this.$refs['menutree'].setCheckedKeys(this.selectMenus)
+            this.$refs['menutree'].setCurrentKey(1)
+            this.getRoleUsers(this.role.roleId)
         },
-        handleEdit(index,rowdata){
-            
-        },
-        handleDelete(index,rowdata){
-
+        userrowchange(currentRow,oldCurrentRow){
+            if(currentRow == null || currentRow == undefined){
+                this.roleuser = {}
+            }else{
+                this.roleuser = deepClone(currentRow)
+            }
         },
         saverolemenu(){
             this.savemenuing = true
@@ -210,28 +359,39 @@ const defaultrole = {
 						message: `修改【${this.role.roleName}】权限成功`
                     })
                 this.savemenuing = false
-                this.updateData()
+                this.updateData(false)
             })
         },
-        updateData(){
+        updateData(isdel){
             for(const v of this.roledata){
                 if(v.roleId === this.role.roleId){
                     const index = this.roledata.indexOf(v)
-                    this.roledata.splice(index,1,this.role)
-                    console.log('匹配成功'+index)
+                        console.log('匹配成功'+index)
+                    if(isdel){
+                       this.roledata.splice(index,1)
+                       this.$refs['roletable'].setCurrentRow(this.roledata[0])
+                    }else{
+                        this.roledata.splice(index,1,this.role)
+                        this.$refs['roletable'].setCurrentRow(this.roledata[index])
+                    }
                     break
                 }
             }
 
         },
         nodeclick(data, node, nodedata){
+           this.checkAll = false
+           this.isIndeterminate = true
            this.currentNode = data
            this.menubuttons = this.allbutton[this.currentNode.id]
            let rolemenubutton = this.rolebuttons[this.currentNode.id]
            if(rolemenubutton != undefined){
                this.buttonlist = rolemenubutton.map(item =>{ return item.buttonId})
+               if(rolemenubutton.length == this.menubuttons.length){
+                  this.isIndeterminate = false
+                  this.checkAll = true
+               }              
            }
-           console.log(this.buttonlist) 
         },
         saveRoleButtons(){
            const req = {
@@ -248,7 +408,16 @@ const defaultrole = {
 						message: `修改【${this.currentNode.label}】权限成功`
                     })
            })
-
+        },
+        handleCheckAllChange(val) {
+            let allbuttonids = this.menubuttons.map(item =>{ return item.buttonId}) 
+            this.buttonlist = val ? allbuttonids : [];
+            this.isIndeterminate = false;
+        },
+        handleCheckedButtonChange(value){
+            let checkedCount = value.length;
+            this.checkAll = checkedCount === this.menubuttons.length;
+            this.isIndeterminate = checkedCount > 0 && checkedCount < this.menubuttons.length;
         }
 
         
@@ -263,7 +432,7 @@ const defaultrole = {
 </script>
 <style lang='scss' scoped>
 .app-container{
-    height: 600px;
+    height: 100vh;
 }
 .menu-panel{
     padding: 10px;
@@ -277,5 +446,20 @@ const defaultrole = {
     line-height: 25px;
     font-size: 16px;
 }
+
+.roletable{
+}
+
+.roleuserbutton{
+    height: 25px;
+}
+
+
+
+.roleusertable{
+    margin-top:5px;
+    clear:both;
+}
+
 
 </style>

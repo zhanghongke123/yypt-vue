@@ -8,7 +8,7 @@ import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 
 import '@/styles/index.scss' // global css
 
-// import ElTag from '@/components/Tag'
+import YyptButton from '@/components/YyptButton/index.js'
 
 import App from './App'
 import store from './store'
@@ -20,7 +20,6 @@ import '@/permission' // permission control
 import permission from '@/directive/permission/index.js' // 权限判断指令
 
 import * as filters from './filters' // global filters
-
 
 Vue.use(permission)
 
@@ -37,10 +36,12 @@ Vue.use(permission)
 //   mockXHR()
 // }
 
+Vue.use(YyptButton)
+
+
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
 
-// Vue.use(ElTag)
 
 // 注册全局的filter
 Object.keys(filters).forEach(key => {

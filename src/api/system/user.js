@@ -30,3 +30,12 @@ export function logout() {
     method: 'get'
   })
 }
+
+
+export function list(data) {
+  return request({
+    url: '/sysuser',
+    method: 'post',
+    data
+  })
+}
