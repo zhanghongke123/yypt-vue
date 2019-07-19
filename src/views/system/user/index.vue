@@ -59,6 +59,11 @@
       </el-table-column>
 
     </el-table>
+    <el-pagination background :page-sizes="pagesizes" :current-page="currentPage" @size-change="handleSizeChange" 
+      @current-change="handleCurrentChange"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
   </div>
 </template>
 
@@ -70,6 +75,9 @@ import { list } from '@/api/system/user'
     props:[''],
     data () {
       return {
+        currentPage: 0,
+        total: 0,
+        pagesizes:[100, 200, 300, 400],
         userlist:[],
         userlistLoading:false
       };
@@ -84,6 +92,9 @@ import { list } from '@/api/system/user'
       },
       fetchData(){
           this.userlistLoading = true
+          const req = {
+            pageSize:total
+          }
           list({pageSize:100,pageNum:0}).then( data =>{
               this.userlist = data.records
               this.userlistLoading = false
@@ -91,6 +102,12 @@ import { list } from '@/api/system/user'
               console.log(err)
           })
       },
+      handleSizeChange(val){
+
+      },
+      handleCurrentChange(val){
+
+      }
 
       
     },
