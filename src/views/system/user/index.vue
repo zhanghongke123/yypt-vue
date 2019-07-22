@@ -59,7 +59,7 @@
       </el-table-column>
 
     </el-table>
-    <el-pagination background :page-sizes="pagesizes" :current-page="currentPage" @size-change="handleSizeChange" 
+    <el-pagination background :page-sizes="pagesizes" :current-page="currentPage" @size-change="handleSizeChange" :page-size="pageSize"
       @current-change="handleCurrentChange"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total">
@@ -78,8 +78,12 @@ import { list } from '@/api/system/user'
         currentPage: 0,
         total: 0,
         pagesizes:[100, 200, 300, 400],
+        pageSize:100,
         userlist:[],
-        userlistLoading:false
+        userlistLoading:false,
+        sortField: "userId",
+        sortOrder: "asc",
+        querylist: {}
       };
     },
     created(){
@@ -88,14 +92,19 @@ import { list } from '@/api/system/user'
 
     methods: {
       rowchange(currentRow,oldRow){
+        
      
       },
       fetchData(){
           this.userlistLoading = true
           const req = {
-            pageSize:total
+            pageSize: this.pageSize,
+            pageNum: this.currentPage,
+            sortField: this.sortField,
+            sortOrder: this.sortOrder,
+            querylist: this.querylist
           }
-          list({pageSize:100,pageNum:0}).then( data =>{
+          list(req).then( data =>{
               this.userlist = data.records
               this.userlistLoading = false
           }).catch(err =>{
