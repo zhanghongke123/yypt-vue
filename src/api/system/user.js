@@ -39,3 +39,11 @@ export function list(data) {
     data
   })
 }
+
+export function deptTree( data ){
+  return request({
+    url: '/sysuser/depttree',
+    method: 'post',
+    data
+  })
+}
