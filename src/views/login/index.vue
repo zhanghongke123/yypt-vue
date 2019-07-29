@@ -3,6 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
+        <img class="logo" src="@/assets/img/logo.png">
         <h3 class="title">登录</h3>
       </div>
 
@@ -273,11 +274,16 @@ $light_gray:#eee;
 
   .title-container {
     position: relative;
-
+    text-align: center;
+    
+    .logo{
+      width: 15%;
+      margin-bottom: 12px;
+    }
     .title {
       font-size: 26px;
       color: $light_gray;
-      margin: 0px auto 40px auto;
+      margin: 0px auto 20px auto;
       text-align: center;
       font-weight: bold;
     }
