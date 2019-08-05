@@ -102,7 +102,7 @@
 
     <div slot="footer" class="dialog-footer" style="text-align:center">
       <el-button @click="deptdialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="handSave()">保存</el-button>
+      <el-button :loading="saveing" type="primary" @click="handSave()">保存</el-button>
     </div>  
   </el-dialog>
 
@@ -143,7 +143,8 @@ export default {
           deptTreeProp:{
             children: 'children',
             label: 'deptName'
-          }
+          },
+          saveing:false
       };
     },
     methods: {
@@ -202,13 +203,16 @@ export default {
             }
         },
         handSave(){
+            
             this.$refs['deptForm'].validate((vail) => {
                 if(vail){
+                  this.saveing = true
                   save(this.dept).then(data =>{
                         this.$message({
                             type:'success',
                             message: '保存成功'
                         })
+                        this.saveing = false
                         this.deptdialogVisible = false
                         this.fetchData()                            
                     }).catch( error =>{

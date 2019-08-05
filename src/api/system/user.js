@@ -40,6 +40,23 @@ export function list(data) {
   })
 }
 
+
+export function save(data) {
+  return request({
+    url: '/sysuser/save',
+    method: 'post',
+    data
+  })
+}
+
+export function del(data) {
+  return request({
+    url: '/sysuser/del',
+    method: 'post',
+    data
+  })
+}
+
 export function deptTree( data ){
   return request({
     url: '/sysuser/depttree',

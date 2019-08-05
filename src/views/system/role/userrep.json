@@ -1,0 +1,103 @@
+{   "multiselect":true,
+    "datacolumn":[
+        {
+            "prop":"userId",
+            "width":"100",
+            "label":"人员ID",
+            "iscombox": false,
+            "comboxvalue":{}
+        },
+        {
+            "prop":"userName",
+            "width":"100",
+            "label":"用户名",
+            "iscombox": false,
+            "comboxvalue":{}
+        },
+        {
+            "prop":"realName",
+            "width":"100",
+            "label":"真实姓名",
+            "iscombox": false,
+            "comboxvalue":{}
+        },
+        {
+            "prop":"sex",
+            "width":"80",
+            "label":"性别",
+            "iscombox": true,
+            "comboxvalue":{
+                "1":"男",
+                "2":"女"
+            }
+        },
+        {
+            "prop":"status",
+            "width":"80",
+            "label":"用户状态",
+            "iscombox": true,
+            "comboxvalue":{
+                "0":"停用",
+                "1":"启用",
+                "2":"冻结"
+            }
+        },
+        {
+            "prop":"mobile",
+            "width":"180",
+            "label":"手机号",
+            "iscombox": false,
+            "comboxvalue":{}
+        },
+        {
+            "prop":"deptName",
+            "width":"100",
+            "label":"部门名称",
+            "iscombox": false,
+            "comboxvalue":{}
+        },
+        {
+            "prop":"createDate",
+            "width":"160",
+            "label":"创建日期",
+            "iscombox": false,
+            "comboxvalue":{}
+        },
+        {
+            "prop":"modifyDate",
+            "width":"160",
+            "label":"修改日期",
+            "iscombox": false,
+            "comboxvalue":{}
+        },
+        {
+            "prop":"deptId",
+            "width":"100",
+            "label":"部门ID",
+            "iscombox": false,
+            "comboxvalue":{}
+        }
+    ],
+    "querycolumn" :[
+        {
+            "prop":"userId",
+            "label":"人员ID",
+            "type":"input"
+        },
+        {
+            "prop":"userName",
+            "label":"用户名",
+            "type":"input"
+        },
+        {
+            "prop":"status",
+            "label":"状态",
+            "type":"select",
+            "options":[
+                {"value":0,"label":"停用"},
+                {"value":2,"label":"锁定"},
+                {"value":1,"label":"启用"}
+            ]
+        }
+    ]
+}

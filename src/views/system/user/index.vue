@@ -6,7 +6,7 @@
               <yypt-button v-permission='"user:delete"' permission='user:delete' @click="click('删除')"></yypt-button>
     </div>
     <el-table :data="userlist"         
-        ref="p"
+        ref="usertable"
         style="width: 100%;"
         row-key="userId"
         height="80vh"
@@ -15,59 +15,62 @@
         highlight-current-row
         @current-change="rowchange"
         v-loading="userlistLoading">
-
-      <el-table-column prop="userId" label="ID">        
+    
+      <el-table-column prop="userId" label="ID" width="80" align="center">        
       </el-table-column>
 
-      <el-table-column prop="userName" label="用户名"> 
+      <el-table-column prop="userName" label="用户名" width="100" align="center"> 
       </el-table-column>
       
-      <el-table-column prop="realName" label="真实姓名">
+      <el-table-column prop="realName" label="真实姓名" width="100" align="center">
       </el-table-column>
 
-      <el-table-column prop="sex" label="性别">
+      <el-table-column prop="sex" label="性别" width="70" align="center">
         <template slot-scope="scope">
           {{ scope.row.sex | getValueText('sexdict')}}
         </template>
       </el-table-column>
 
-      <el-table-column prop="avatar" label="头像">
-      </el-table-column>
-
-      <el-table-column prop="mobile" label="手机号">
-      </el-table-column>
-
-      <el-table-column prop="deptName" label="部门名称">
-      </el-table-column>
-
-      <el-table-column prop="roleNames" label="角色集合">
-      </el-table-column>
-
-      <el-table-column prop="idcard" label="身份证号">
-      </el-table-column>
-
-      <el-table-column prop="openid" label="openid">
-      </el-table-column>
-
-      <el-table-column prop="status" label="用户状态">
+      <el-table-column prop="status" label="用户状态" align="center" width="80">
         <template slot-scope="scope">
-          {{ scope.row.status | getValueText('statusdict')}}
+          <el-tag effect="dark" size="small" :type="gettagtype(scope.row.status)">
+            {{ scope.row.status | getValueText('statusdict')}}
+          </el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column prop="lockDate" label="锁定日期">       
+      <el-table-column prop="avatar" label="头像" align="center"    width="80" >
       </el-table-column>
 
-      <el-table-column prop="createDate" label="创建日期">        
+      <el-table-column prop="mobile" label="手机号" align="center" width="120">
       </el-table-column>
 
-      <el-table-column prop="modifyDate" label="修改日期">        
+      <el-table-column prop="deptName" label="部门名称" align="center" width="100" >
       </el-table-column>
 
-      <el-table-column prop="roleIds" label="角色ID集合">        
+      <el-table-column prop="roleNames" label="角色集合" align="center" width="200" >
       </el-table-column>
 
-      <el-table-column prop="deptId" label="部门ID">
+      <el-table-column prop="idcard" label="身份证号" align="center" width="200" >
+      </el-table-column>
+
+      <el-table-column prop="openid" label="openid" align="center" width="200">
+      </el-table-column>
+
+
+      <el-table-column prop="lockDate" label="锁定日期" align="center" width="160">       
+      </el-table-column>
+
+      <el-table-column prop="createDate" label="创建日期" align="center" width="160">        
+      </el-table-column>
+
+      <el-table-column prop="modifyDate" label="修改日期" align="center" width="160">        
+      </el-table-column>
+
+      <el-table-column prop="roleIds" label="角色ID集合" align="center" width="160">        
+      </el-table-column>
+
+      <el-table-column prop="deptId" label="部门ID" align="center" width="160">
       </el-table-column>
 
     </el-table>
@@ -104,29 +107,40 @@
 
             <el-col :span="12">
                 <el-form-item prop="sex" label="性别:">
-                    <el-select v-model="value" clearable placeholder="请选择">
+                    <el-select v-model="user.sex" clearable placeholder="请选择">
                       <el-option
                         v-for="item in sexoptions"
-                        :key="'select'+item.value"
+                        :key="'select'+item.key"
                         :label="item.label"
-                        :value="item.value">
+                        :value="item.key">
                       </el-option>
                     </el-select>
                 </el-form-item>
             </el-col>
           </el-row>
+          
 
+          <el-row>
+            <el-col :span="12">
+              <el-form-item prop="deptId" label= "所属部门">
+                      <el-cascader :props="{value:'id',label:'label',expandTrigger:'hover'}" :show-all-levels='false'
+                      v-model="user.deptId" :filter-method='filtdept' clearable filterable
+                      :options="deptoptions">
+                      </el-cascader>
+              </el-form-item>
+            </el-col>
 
-            <el-form-item prop="deptId" label= "所属部门">
-                    <el-cascader :props="{value:'id',label:'label',expandTrigger:'hover'}" :show-all-levels='false'
-                    v-model="user.deptId" :filter-method='filtdept' clearable filterable
-                    :options="deptoptions">
-                    </el-cascader>
-            </el-form-item>
+            <el-col :span="12">
+                <el-form-item prop="idcard" label="身份证号:">
+                   <el-input v-model="user.idcard" placeholder="请输入身份证号"></el-input>
+                </el-form-item>
+            </el-col>
+         </el-row>
+
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align:center">
           <el-button @click="dialogUserVisible = false">取 消</el-button>
-          <el-button type="primary" @click="handUserSave()">保存</el-button>
+          <el-button :loading="saveing"  type="primary" @click="handUserSave()">保存</el-button>
         </div> 
     </el-dialog>
 
@@ -134,8 +148,9 @@
 </template>
 
 <script>
-import { list, deptTree } from '@/api/system/user'
-import { truncate } from 'fs';
+import { list, deptTree, save, del } from '@/api/system/user'
+import { deepClone } from '@/utils'
+
 
 const defaultuser = {
     userId: '',
@@ -170,8 +185,19 @@ const statusdict = [
 
 
   export default {
-    props:[''],
     data () {
+      const checkPhone = (rule, value, callback) => {
+        if (!value) {
+          return callback();
+        } else {
+          const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+          if (reg.test(value)) {
+            callback();
+          } else {
+            return callback(new Error('请输入正确的手机号'));
+          }
+        }
+      }
       return {
         sexoptions:sexdict,
         deptoptions:[],
@@ -183,17 +209,17 @@ const statusdict = [
         userlist:[],
         userlistLoading:false,
         sortField: "userId",
-        sortOrder: "asc",
+        sortOrder: "desc",
         querylist: {},
         dialogUserVisible: false,
         rules:{
-           userName:[
-             {required:true,message:'用户名用来登录系统不能为空',trigger:'blur'}
-           ]
+           userName:[{required:true,message:'用户名用来登录系统不能为空',trigger:'blur'}],
+           deptId:[{required:true,message:'所属部门必须维护',trigger:'blur'}],
+           mobile:[{validator: checkPhone, trigger: 'blur'}]
         },
         title:'',
-        userEdit: false
-
+        userEdit: false,
+        saveing:false,
       };
     },
     created(){
@@ -212,11 +238,13 @@ const statusdict = [
              this.dialogUserVisible = true
              this.$nextTick(() => {
                 this.$refs['userForm'].clearValidate()
-             })  
+             })
+
 
           }else if(command == "修改"){
              this.userEdit = true
              this.dialogUserVisible = true
+             this.user.deptId = [ this.user.deptId ]
              this.$nextTick(() => {
                 this.$refs['userForm'].clearValidate()
              })              
@@ -226,20 +254,19 @@ const statusdict = [
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(async() => {
-                        // await delRole(this.role)
-                        // this.$message({
-                        //     type: 'success',
-                        //     message: '删除成功'
-                        // })
-                        // this.updateData(true)
+                        await del(this.user)
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功'
+                        })
+                        this.fetchData()
                     }).catch(err => {
                         console.error(err)
                     })   
           }
       },
       rowchange(currentRow,oldRow){
-        
-     
+        this.user = deepClone(currentRow)
       },
       fetchData(){
           this.userlistLoading = true
@@ -254,6 +281,9 @@ const statusdict = [
               this.userlist = data.records
               this.total = data.total
               this.userlistLoading = false
+            if(this.userlist.length > 0){
+                this.$refs['usertable'].setCurrentRow(this.userlist[0])
+            }
           }).catch(err =>{
               console.log(err)
           })
@@ -264,13 +294,30 @@ const statusdict = [
           })
       },
       handleSizeChange(val){
-
+        this.fetchData()
       },
       handleCurrentChange(val){
-
+        this.fetchData()
       },
       handUserSave(){
-
+          this.$refs['userForm'].validate((vail) => {
+              if(vail){
+                this.saveing = true
+                this.user.deptId = this.user.deptId[0]
+                save(this.user).then(data =>{
+                      this.$message({
+                          type:'success',
+                          message: '保存成功'
+                      })
+                      this.saveing = false
+                      this.dialogUserVisible = false
+                      this.fetchData();
+                  }).catch( error =>{
+                      console.error(error)
+                      this.saveing = false
+                  })
+              }
+          })
       },
       filtdept(node, keyword){
           console.log(node)
@@ -284,20 +331,32 @@ const statusdict = [
                 return true
             }
           }
-      }
-
-      
+      },
+      gettagtype(value){
+        if(value === 0){
+          // 停用
+          return "danger"
+        }else if(value === 1){
+          // 启用
+          return "success"
+        }else if(value === 2){
+          //锁定
+          return "warning"
+        }else{
+          return ""
+        }    
+      }  
     },
     filters:{
       getValueText(value, valname){
        let dict =  eval(valname)
-       console.log("---------------------------------"+value)
        for(let info of dict){
           if(info.key == value){
              return info.label
           }
        }
       }
+
     }
 
 

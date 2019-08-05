@@ -114,16 +114,20 @@
           </div> 
 
       </el-dialog>
+      
+      <el-dialog  title="选择角色人员" :visible.sync="showRoleUser" width="70%" :destroy-on-close="true" :modal-append-to-body="false" >
+        <userRep @ok="selectUser" @cancel="showRoleUser = false" :queryRoleId="role.roleId"></userRep>
+      </el-dialog>
   </div>
 </template>
 
 <script>
-import { list, getMenuTree, saveRoleMenu, getRoleButtons,
+import { list, getMenuTree, saveRoleMenu, getRoleButtons, saverRoleUser,
         saveRoleButtons, saveRole, delRole, getRoleUsers, delRoleUser } from '@/api/system/role'
 import { getMenuButtons } from '@/api/system/menu'
 import { validatenull } from '@/utils/validate'
 import { deepClone } from '@/utils'
-
+import userRep from './userrep'
 
 const defaultrole = {
       roleId:null,
@@ -135,6 +139,9 @@ const defaultrole = {
   export default {
     name:'',
     props:[''],
+    components:{
+       userRep
+    },
     data () {
       return {
           listLoading:true,
@@ -164,7 +171,8 @@ const defaultrole = {
           roleuserdata:[],
           roleuser:{},
           checkAll: false,
-          isIndeterminate: true
+          isIndeterminate: true,
+          showRoleUser: false
           
       };
     },
@@ -209,6 +217,14 @@ const defaultrole = {
                         console.error(err)
                     })   
           }else if(command == "授权人员"){
+              if(this.role.roleId == undefined || this.role.roleId == undefined){
+                    this.$message({
+                            type:'error',
+                            message: '请选择要操作的角色行'
+                    })
+                    return;
+              }
+              this.showRoleUser = true
 
           }else if(command == "删除角色人员"){
             this.$confirm(`是否删除【${this.roleuser.userName}】`, '警告', {
@@ -349,7 +365,6 @@ const defaultrole = {
                 roleId: this.role.roleId,
                 menuIds: result.join(',')
             }
-            console.log(this.role)
             
             this.role.menuIds = data.menuIds
 
@@ -366,7 +381,6 @@ const defaultrole = {
             for(const v of this.roledata){
                 if(v.roleId === this.role.roleId){
                     const index = this.roledata.indexOf(v)
-                        console.log('匹配成功'+index)
                     if(isdel){
                        this.roledata.splice(index,1)
                        this.$refs['roletable'].setCurrentRow(this.roledata[0])
@@ -418,6 +432,24 @@ const defaultrole = {
             let checkedCount = value.length;
             this.checkAll = checkedCount === this.menubuttons.length;
             this.isIndeterminate = checkedCount > 0 && checkedCount < this.menubuttons.length;
+        },
+        selectUser(res){
+            this.showRoleUser = false
+            if(validatenull(res)){
+               return 
+            }
+            let roleId = this.role.roleId
+            let userIds = res.map(function(elem,index){
+                return elem.userId;
+            }).join(",")
+            
+            let req = {
+                roleId: roleId,
+                userIds: userIds
+            }
+            saverRoleUser(req).then(data =>{
+                this.getRoleUsers(this.role.roleId)
+            })
         }
 
         

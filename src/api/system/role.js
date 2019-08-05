@@ -84,3 +84,20 @@ export function delRoleUser(data){
         data
     })
 }
+
+export function userRep(data){
+    return request({
+        url:'/sysrole/userRep',
+        method: 'post',
+        data
+    })
+}
+
+
+export function saverRoleUser(data){
+    return request({
+        url:'/sysrole/saverRoleUser',
+        method: 'post',
+        data
+    })
+}
