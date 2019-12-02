@@ -3,6 +3,7 @@
        <el-form :inline="true" ref="queryform"  :model="queyResult" size="small">
          <el-form-item v-for="query in querycols" :label="query.label" :prop="query.prop" :key='"query"+query.prop'>
             <el-input v-if="query.type == 'input'" v-model="queyResult[query.prop]"></el-input>
+            <el-input v-else-if="query.type == 'number'" v-model.number="queyResult[query.prop]"  @change="toNumber($event,query.prop)"></el-input>
             <el-select v-else-if="query.type == 'select'" v-model="queyResult[query.prop]">
                   <el-option
                     v-for="item in query.options"
@@ -40,7 +41,11 @@
         },
         resetQueryForm(){
             //重置表单
-            this.$refs["queryform"].resetFields()
+            this.queyResult = {}
+        },
+        toNumber(value,prop){
+           let num = value.replace(/[^0-9]/ig,"")
+           this.queyResult[prop] = num
         }
     },
 

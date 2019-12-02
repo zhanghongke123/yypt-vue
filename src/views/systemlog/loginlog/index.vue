@@ -17,7 +17,7 @@ import YyptQuery from '@/components/YyptQuery'
             {
                 prop:"userName",
                 label:"用户名",
-                type:"input"
+                type:"number"
             }
           ]
       };

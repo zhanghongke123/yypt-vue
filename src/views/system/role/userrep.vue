@@ -104,7 +104,7 @@ import { userRep } from '@/api/system/role'
           })
       },
       resetQueryForm(){
-        this.$refs["queryform"].resetFields();
+        this.queryconditions = {}
       },
       dblclick(row){
          this.$refs['table'].toggleRowSelection(row);  

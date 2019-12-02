@@ -29,6 +29,7 @@ import store from '../store'
           name: name,
           meta: meta,
           icon: icon,
+          ismenu: component === 'Layout' ? true : false,
           children: validatenull(children) ? [] : formatRoutes(children)
         }
         aRouter.push(oRouter)

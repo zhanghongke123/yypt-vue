@@ -1,7 +1,7 @@
 <template>
   <div class="app-container" >
       <el-row>
-          <el-col :span="14">
+          <el-col :xs="24" :sm="24" :md="24" :lg="14" :xl="14"  >
               <yypt-button v-permission='"role:add"' permission='role:add' @click="click('新增')"></yypt-button>
               <yypt-button v-permission='"role:edit"' permission='role:edit' @click="click('修改')"></yypt-button>
               <yypt-button v-permission='"role:delete"' permission='role:delete' @click="click('删除')"></yypt-button>
@@ -64,7 +64,7 @@
 
 
           </el-col>
-          <el-col :span="5" class="menu-panel">
+          <el-col :xs="24" :sm="24" :md="24" :lg="5" :xl="5"  class="menu-panel">
               <div class="menu-text">
                 <span>【{{ role.roleName }}】拥有的权限为</span>
               </div>
@@ -78,7 +78,7 @@
 
           </el-col>
 
-          <el-col :span="5" class="menu-panel">
+          <el-col :xs="24" :sm="24" :md="24" :lg="5" :xl="5" class="menu-panel">
               <div class="menu-text">
                 <span>【{{ currentNode.label }}】的按钮</span>
               </div>

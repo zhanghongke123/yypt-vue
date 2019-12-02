@@ -1,5 +1,28 @@
 <template>
   <div class="user-container">
+
+    <!-- 查询部分  -->
+    <el-form :inline="true" ref="queryform"  :model="queryconditions" size="small">
+      <el-form-item v-for="query in querycolumn" :label="query.label" :prop="query.prop" :key='"query"+query.prop'>
+              <el-input v-if="query.type == 'input'" v-model="queryconditions[query.prop]"></el-input>
+              <el-select v-else-if="query.type == 'select'" v-model="queryconditions[query.prop]">
+                    <el-option
+                      v-for="item in query.options"
+                      :key="item.key"
+                      :label="item.label"
+                      :value="item.key">
+                    </el-option>
+              </el-select>
+              <el-date-picker v-else v-model="queryconditions[query.prop]" type="datetime" :placeholder='"选择"+query.prop'> 
+              </el-date-picker>
+      </el-form-item>
+      <el-form-item>
+          <el-button type="primary" size="small"  @click="fetchData()">查询</el-button>
+          <el-button  size="small"  @click="resetQueryForm()">重置</el-button>
+      </el-form-item>
+    </el-form>
+
+
     <div style="height:35px">
               <yypt-button v-permission='"user:add"' permission='user:add' @click="click('新增')"></yypt-button>
               <yypt-button v-permission='"user:edit"' permission='user:edit' @click="click('修改')"></yypt-button>
@@ -9,7 +32,7 @@
         ref="usertable"
         style="width: 100%;"
         row-key="userId"
-        height="80vh"
+        height="70vh"
         border
         default-expand-all
         highlight-current-row
@@ -33,7 +56,7 @@
 
       <el-table-column prop="status" label="用户状态" align="center" width="80">
         <template slot-scope="scope">
-          <el-tag effect="dark" size="small" :type="gettagtype(scope.row.status)">
+          <el-tag effect="light" size="small" :type="gettagtype(scope.row.status)">
             {{ scope.row.status | getValueText('statusdict')}}
           </el-tag>
         </template>
@@ -54,7 +77,7 @@
       <el-table-column prop="idcard" label="身份证号" align="center" width="200" >
       </el-table-column>
 
-      <el-table-column prop="openid" label="openid" align="center" width="200">
+      <el-table-column show-overflow-tooltip prop="openid" label="openid" align="center" width="200">
       </el-table-column>
 
 
@@ -65,6 +88,9 @@
       </el-table-column>
 
       <el-table-column prop="modifyDate" label="修改日期" align="center" width="160">        
+      </el-table-column>
+
+      <el-table-column show-overflow-tooltip prop="memo" label="备注" align="center" width="160">        
       </el-table-column>
 
       <el-table-column prop="roleIds" label="角色ID集合" align="center" width="160">        
@@ -84,13 +110,13 @@
         <el-form :model="user" ref="userForm"  :rules="rules" label-width="80px" size='small'>
 
           <el-row>
-            <el-col :span="12">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
                 <el-form-item prop="userName" label="用户名:">
                    <el-input v-model="user.userName" placeholder="请输入用户名"></el-input>
                 </el-form-item>
             </el-col>
 
-            <el-col :span="12">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
                 <el-form-item prop="realName" label="真实姓名:">
                     <el-input v-model="user.realName" placeholder="请输入真实姓名" ></el-input>
                 </el-form-item>
@@ -99,13 +125,13 @@
 
 
           <el-row>
-            <el-col :span="12">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
                 <el-form-item prop="mobile" label="手机号:">
                    <el-input v-model="user.mobile" placeholder="请输入手机号"></el-input>
                 </el-form-item>
             </el-col>
 
-            <el-col :span="12">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
                 <el-form-item prop="sex" label="性别:">
                     <el-select v-model="user.sex" clearable placeholder="请选择">
                       <el-option
@@ -121,7 +147,7 @@
           
 
           <el-row>
-            <el-col :span="12">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item prop="deptId" label= "所属部门">
                       <el-cascader :props="{value:'id',label:'label',expandTrigger:'hover'}" :show-all-levels='false'
                       v-model="user.deptId" :filter-method='filtdept' clearable filterable
@@ -130,7 +156,7 @@
               </el-form-item>
             </el-col>
 
-            <el-col :span="12">
+            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
                 <el-form-item prop="idcard" label="身份证号:">
                    <el-input v-model="user.idcard" placeholder="请输入身份证号"></el-input>
                 </el-form-item>
@@ -171,6 +197,8 @@ const defaultuser = {
     deptId:null
 }
 
+
+
 const sexdict = [
   { key: 1, label: "男" },
   { key: 2, label: "女" }
@@ -181,6 +209,25 @@ const statusdict = [
     { key: 1, label: "启用" },
     { key: 2, label: "冻结" }
 
+]
+
+const querycolumn = [
+      {
+        prop:"userId",
+        label:"人员ID",
+        type:"input"
+    },
+    {
+        prop:"userName",
+        label:"用户名",
+        type:"input"
+    },
+    {
+        prop:"status",
+        label:"状态",
+        type:"select",
+        options:statusdict
+    }
 ]
 
 
@@ -199,6 +246,7 @@ const statusdict = [
         }
       }
       return {
+        querycolumn:querycolumn,
         sexoptions:sexdict,
         deptoptions:[],
         user: Object.assign({}, defaultuser),
@@ -210,7 +258,11 @@ const statusdict = [
         userlistLoading:false,
         sortField: "userId",
         sortOrder: "desc",
-        querylist: {},
+        queryconditions: {
+          // userName:'',
+          // userId:'',
+          // status:''
+        },
         dialogUserVisible: false,
         rules:{
            userName:[{required:true,message:'用户名用来登录系统不能为空',trigger:'blur'}],
@@ -266,7 +318,11 @@ const statusdict = [
           }
       },
       rowchange(currentRow,oldRow){
-        this.user = deepClone(currentRow)
+        if(currentRow == null){
+          this.user =Object.assign({},defaultuser)
+        }else{
+          this.user = deepClone(currentRow)
+        }
       },
       fetchData(){
           this.userlistLoading = true
@@ -275,7 +331,7 @@ const statusdict = [
             pageNum: this.currentPage,
             sortField: this.sortField,
             sortOrder: this.sortOrder,
-            querylist: this.querylist
+            querylist: this.queryconditions
           }
           list(req).then( data =>{
               this.userlist = data.records
@@ -298,6 +354,10 @@ const statusdict = [
       },
       handleCurrentChange(val){
         this.fetchData()
+      },
+      resetQueryForm(){
+        // this.$refs["queryform"].resetFields();
+        this.queryconditions = {}
       },
       handUserSave(){
           this.$refs['userForm'].validate((vail) => {
@@ -371,6 +431,9 @@ const statusdict = [
   &-top{
     margin: 5px;
   }
+}
+.el-form-item{
+  margin-bottom: 5px;
 }
 
 </style>

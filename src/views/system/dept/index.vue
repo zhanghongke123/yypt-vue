@@ -3,12 +3,12 @@
 
   <el-row>
     <!-- 树形结构部分 -->
-    <el-col :span="4">
+    <el-col  :xs="24" :sm="24" :md="24" :lg="4" :xl="4"  class="dpettreediv">
       <el-tree ref="depttree" node-key="deptId" :data="depttreedata" :highlight-current="true" :props="deptTreeProp" @node-click='nodeclick' default-expand-all></el-tree>
     </el-col>
 
     <!-- 表格部分 -->
-    <el-col :span="20">
+    <el-col :xs="24" :sm="24" :md="24" :lg="20" :xl="20">
        <div :style="{height:'35px'}">
           <yypt-button v-permission='"dept:add"' permission='dept:add' @click="click('新增')"></yypt-button>
           <yypt-button v-permission='"dept:edit"' permission='dept:edit' @click="click('修改')"></yypt-button>
@@ -234,6 +234,12 @@ export default {
   }
 
 </script>
-<style lang='' scoped>
+<style lang='scss' scoped>
+.dpettreediv{
+   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+   height: 85vh;
+   border-radius: 2px;
+   padding: 5px;
+}
 
 </style>

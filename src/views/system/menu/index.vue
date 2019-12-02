@@ -3,12 +3,12 @@
 
     <el-row>
       <!-- 左边 （树形区域）-->
-      <el-col :span="4">
+      <el-col :xs="24" :sm="24" :md="24" :lg="4" :xl="4" class="menutree">
          <el-tree ref="menutree" node-key="menuId" :data="menutreedata" :highlight-current="true" :props="menuTreeProp" @node-click='nodeclick' default-expand-all></el-tree>
       </el-col>
 
       <!-- 右部分（表格部分） -->
-      <el-col :span="20">
+      <el-col  :xs="24" :sm="24" :md="24" :lg="20" :xl="20">
       <!-- 总单部分 -->
           <el-table
             :data="menutreedata"
@@ -29,10 +29,19 @@
             <el-table-column prop="name" label="名称" header-align="center" align="center"   min-width="120">
             </el-table-column>
 
-            <el-table-column prop="path" label="路径" header-align="center" align="center"  sortable min-width="120">
+            <el-table-column prop="path" label="请求路径" header-align="center" align="center"  sortable min-width="120">
             </el-table-column>
 
-            <el-table-column prop="component" label="组件名称" header-align="center" align="center"  sortable min-width="120">
+            <el-table-column prop="componentName" label="组件名称" header-align="center" align="center"  sortable min-width="120">
+            </el-table-column>
+
+            <el-table-column prop="component" label="组件路径" header-align="center" align="center"  sortable min-width="120">
+            </el-table-column>
+
+            <el-table-column prop="nocacheFlag" label="是否禁用缓存" header-align="center" align="center"  sortable min-width="120">
+              <template slot-scope="scope">
+                  {{ scope.row.nocacheFlag == 1 ? '是' : '否' }}
+              </template>
             </el-table-column>
 
             <el-table-column   prop="icon" label="图标" class-name="icon-column" header-align="center" align="center"   min-width="80">
@@ -87,7 +96,7 @@
           row-key="buttonId"
           border
           highlight-current-row
-          height="30vh"
+          height="40vh"
           v-loading="buttonlistLoading">
 
             <el-table-column prop="buttonId" label="ID" header-align="center" align="center"  min-width="100">
@@ -165,6 +174,23 @@
                       <el-button  type="text" @click="menuiconVisible = true">选择图标</el-button>
                   </el-col>
                 </el-row>
+            </el-form-item>
+         </el-col>
+      </el-row>
+
+      <el-row >
+         <el-col :span="12">
+            <el-form-item prop="componentName" label="组件名称:">
+              <el-input v-model="menu.componentName"></el-input>
+            </el-form-item>
+         </el-col>
+         <el-col :span="12">
+            <el-form-item prop="nocacheFlag" label="禁用缓存:">
+               <el-switch
+                v-model="menu.nocacheFlag"
+                :active-value="Number('1')"
+                :inactive-value="Number('0')">
+              </el-switch>
             </el-form-item>
          </el-col>
       </el-row>
@@ -292,7 +318,9 @@ const defaultmenu = {
       permission:null,
       type:1,
       createDate:null,
-      modifyDate:null
+      modifyDate:null,
+      componentName:'',
+      nocacheFlag:0
 }
 
 const defaultmenuButton = {
@@ -526,5 +554,11 @@ const typedict = [
    margin-top: 0px;
    width: 24px;
    height: 24px;
+}
+.menutree{
+   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+   height: 85vh;
+   border-radius: 2px;
+   padding: 5px;
 }
 </style>
