@@ -23,6 +23,9 @@ import * as filters from './filters' // global filters
 
 Vue.use(permission)
 
+import api from '@/api/common/commonapi.js'
+Vue.prototype.$api = api
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

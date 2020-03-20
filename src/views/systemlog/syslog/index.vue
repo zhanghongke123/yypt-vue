@@ -4,26 +4,35 @@
 
       <el-table :data="datalist"         
         style="width: 100%;"
-        row-key="loginId"
+        row-key="logId"
         height="70vh"
         border
         highlight-current-row
         v-loading="listLoading">
     
-      <el-table-column prop="loginId" label="ID" width="80" align="center">        
+      <el-table-column prop="logId" label="ID" width="80" align="center">        
       </el-table-column>
 
-      <el-table-column prop="userName" label="用户名" width="100" align="center"> 
+      <el-table-column prop="username" label="账号" width="100" align="center"> 
       </el-table-column>
       
-      <el-table-column prop="loginTime" label="登录日期" width="150" align="center">
+      <el-table-column prop="operation" label="描述信息" width="150" align="center" :show-overflow-tooltip="true">
       </el-table-column>
 
-      <el-table-column prop="location" label="登录地址" width="180" align="center">
+      <el-table-column prop="method" label="方法" width="180" align="center" :show-overflow-tooltip="true">
       </el-table-column>
 
 
-      <el-table-column prop="ip" label="登录IP" width="180" align="center">
+      <el-table-column prop="params" label="参数" width="180" align="center" :show-overflow-tooltip="true">
+      </el-table-column>
+
+        <el-table-column prop="ip" label="调用ip" width="180" align="center">
+      </el-table-column>
+
+        <el-table-column prop="location" label="所在地" width="180" align="center">
+      </el-table-column>
+
+      <el-table-column prop="createDate" label="调用日期" width="180" align="center">
       </el-table-column>
 
     </el-table>
@@ -47,7 +56,7 @@ import YyptQuery from '@/components/YyptQuery'
       return {
           querycols:[
             {
-                prop:"userName",
+                prop:"username",
                 label:"用户名",
                 type:"input"
             },
@@ -55,7 +64,12 @@ import YyptQuery from '@/components/YyptQuery'
                 prop:"ip",
                 label:"ip",
                 type:"input"
-            }
+            },
+             {
+                prop:"operation",
+                label:"接口描述",
+                type:"input"
+            },
           ],
           datalist:[],
           currentPage: 0,
@@ -94,7 +108,7 @@ import YyptQuery from '@/components/YyptQuery'
           sortOrder: this.sortOrder,
           querylist: this.queryconditions
         }
-        this.$api.post('sysloginlog/list',req).then(resp =>{
+        this.$api.post('syslog/list',req).then(resp =>{
             this.datalist = resp.records
             this.total = resp.total
             this.listLoading = false
