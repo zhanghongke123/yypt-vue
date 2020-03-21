@@ -44,6 +44,12 @@
               </template>
             </el-table-column>
 
+            <el-table-column prop="hiddenFlag" label="是否隐藏" header-align="center" align="center"  sortable min-width="120">
+              <template slot-scope="scope">
+                  {{ scope.row.hiddenFlag == 1 ? '是' : '否' }}
+              </template>
+            </el-table-column>
+
             <el-table-column   prop="icon" label="图标" class-name="icon-column" header-align="center" align="center"   min-width="80">
               <template slot-scope="scope">
                   <svg-icon :icon-class="scope.row.icon"></svg-icon>
@@ -179,15 +185,27 @@
       </el-row>
 
       <el-row >
-         <el-col :span="12">
+         <el-col :span="24">
             <el-form-item prop="componentName" label="组件名称:">
               <el-input v-model="menu.componentName"></el-input>
             </el-form-item>
          </el-col>
+      </el-row>
+
+      <el-row >
          <el-col :span="12">
             <el-form-item prop="nocacheFlag" label="禁用缓存:">
                <el-switch
                 v-model="menu.nocacheFlag"
+                :active-value="Number('1')"
+                :inactive-value="Number('0')">
+              </el-switch>
+            </el-form-item>
+         </el-col>
+          <el-col :span="12">
+            <el-form-item prop="hiddenFlag" label="菜单隐藏:">
+               <el-switch
+                v-model="menu.hiddenFlag"
                 :active-value="Number('1')"
                 :inactive-value="Number('0')">
               </el-switch>
@@ -320,7 +338,8 @@ const defaultmenu = {
       createDate:null,
       modifyDate:null,
       componentName:'',
-      nocacheFlag:0
+      nocacheFlag:0,
+      hiddenFlag:0
 }
 
 const defaultmenuButton = {
