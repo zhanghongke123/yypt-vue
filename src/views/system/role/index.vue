@@ -41,7 +41,7 @@
                 </div>
              
 
-                <el-table ref="roleusertable" height="40vh" style="width: 100%;margin-top: 10px;" v-loading="userlistLoading" :data="roleuserdata"
+                <el-table stripe ref="roleusertable" height="40vh" style="width: 100%;margin-top: 10px;" v-loading="userlistLoading" :data="roleuserdata"
                             row-key="roleUserId" border highlight-current-row @current-change="userrowchange">
                         <el-table-column prop="roleUserId" label="ID" header-align="center" align="center"  min-width="100">
                         </el-table-column>
@@ -115,7 +115,7 @@
 
       </el-dialog>
       
-      <el-dialog  title="选择角色人员" :visible.sync="showRoleUser" width="70%" :destroy-on-close="true" :modal-append-to-body="false" >
+      <el-dialog  title="选择角色人员" :visible.sync="showRoleUser" width="70%"  :destroy-on-close="true" :modal-append-to-body="false" >
         <userRep @ok="selectUser" @cancel="showRoleUser = false" :queryRoleId="role.roleId"></userRep>
       </el-dialog>
   </div>
@@ -177,9 +177,9 @@ const defaultrole = {
       };
     },
 
-    created(){
+    async created(){
       //获取所有菜单的树形信息
-      this.getMenu()
+      await this.getMenu()
       //获取角色列表
       this.fetchData()
     },

@@ -17,6 +17,7 @@
             row-key="menuId"
             height="45vh"
             border
+            stripe
             highlight-current-row
             default-expand-all
             v-loading="listLoading"
@@ -32,13 +33,16 @@
             <el-table-column prop="path" label="请求路径" header-align="center" align="center"  sortable min-width="120">
             </el-table-column>
 
+                        <el-table-column prop="redirect" label="跳转url" header-align="center" align="center"  sortable min-width="120">
+            </el-table-column>
+
             <el-table-column prop="componentName" label="组件名称" header-align="center" align="center"  sortable min-width="120">
             </el-table-column>
 
             <el-table-column prop="component" label="组件路径" header-align="center" align="center"  sortable min-width="120">
             </el-table-column>
 
-            <el-table-column prop="nocacheFlag" label="是否禁用缓存" header-align="center" align="center"  sortable min-width="120">
+            <el-table-column prop="nocacheFlag" label="是否禁用缓存" header-align="center" align="center"  sortable min-width="140">
               <template slot-scope="scope">
                   {{ scope.row.nocacheFlag == 1 ? '是' : '否' }}
               </template>
@@ -116,6 +120,8 @@
             </el-table-column>
 
 
+
+
             <el-table-column   prop="icon" label="图标" class-name="icon-column" header-align="center" align="center"   min-width="80">
               <template slot-scope="scope">
                   <svg-icon :icon-class="scope.row.icon"></svg-icon>
@@ -152,7 +158,7 @@
     </el-row>
     
 
-   <el-dialog :title='dialogTitle' :visible.sync="dialogVisible">
+   <el-dialog v-el-drag-dialog :title='dialogTitle' :visible.sync="dialogVisible">
       <el-dialog
       width="80%"
       title="选择菜单的图标"
@@ -185,9 +191,14 @@
       </el-row>
 
       <el-row >
-         <el-col :span="24">
+         <el-col :span="12">
             <el-form-item prop="componentName" label="组件名称:">
               <el-input v-model="menu.componentName"></el-input>
+            </el-form-item>
+         </el-col>
+          <el-col :span="12">
+            <el-form-item prop="redirect" label="跳转url:">
+              <el-input v-model="menu.redirect"></el-input>
             </el-form-item>
          </el-col>
       </el-row>
@@ -259,7 +270,7 @@
 
 
 <!-- 子单部分 -->
-  <el-dialog :title='dialogTitle' :visible.sync="buttondialogVisible">
+  <el-dialog v-el-drag-dialog :title='dialogTitle' :visible.sync="buttondialogVisible">
       <el-dialog
       width="80%"
       title="选择菜单的图标"
@@ -361,6 +372,7 @@ const typedict = [
 
 
   export default {
+    name:'system-menu',
     props:[''],
     components:{
       IconLib
@@ -396,6 +408,8 @@ const typedict = [
 
     created() {
       this.fetchData()
+      // console.log(this.$router.options.routes)
+
     },
 
     methods: {

@@ -21,7 +21,8 @@ import store from '../store'
         icon,
         meta,
         children,
-        hidden
+        hidden,
+        redirect
       } = oMenu
       if (!validatenull(component)) {
         const oRouter = {
@@ -31,6 +32,7 @@ import store from '../store'
           meta: meta,
           icon: icon,
           hidden:hidden,
+          redirect:redirect,
           ismenu: component === 'Layout' ? true : false,
           children: validatenull(children) ? [] : formatRoutes(children)
         }

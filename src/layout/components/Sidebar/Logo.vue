@@ -12,8 +12,9 @@
     </transition>
   </div>
 </template>
-
 <script>
+import settings from '@/settings'
+
 export default {
   name: 'SidebarLogo',
   props: {
@@ -24,7 +25,7 @@ export default {
   },
   data() {
     return {
-      title: '致一科技',
+      title: settings.title,
       logo:'@/assets/img/logo.png',
     }
   }

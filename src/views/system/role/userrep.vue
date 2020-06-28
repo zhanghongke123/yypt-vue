@@ -21,7 +21,7 @@
          </el-form-item>
        </el-form>
 
-        <el-table ref="table" v-loading="listLoading" :data="data" height="50vh" @cell-dblclick="dblclick" @selection-change="handleSelectionChange"
+        <el-table stripe ref="table" v-loading="listLoading" :data="data" height="50vh" @cell-dblclick="dblclick" @selection-change="handleSelectionChange"
          @current-change="rowchange" border highlight-current-row >
           <el-table-column v-if="multiselect" type="selection" width="55"></el-table-column>
           <el-table-column v-for="col in datacolumn" :key="col.prop"  :width="col.width" align="center" :label="col.label">
@@ -62,7 +62,7 @@ import { userRep } from '@/api/system/role'
          currentPage: 0,
          total: 0,
          pagesizes:[20, 40, 100],
-         pageSize:100,
+         pageSize:20,
          sortField: "userId",
          sortOrder: "desc",
          selectrows: [],
@@ -77,9 +77,11 @@ import { userRep } from '@/api/system/role'
             this.currenRow = currenRow
         },
         handleSizeChange(val){
+          this.pageSize = val
           this.fetchData()
         },
         handleCurrentChange(val){
+          this.currentPage = val
           this.fetchData()
         },
         fetchData(){

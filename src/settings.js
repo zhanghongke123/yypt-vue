@@ -12,8 +12,10 @@ module.exports = {
    * @type {boolean} true | false
    * @description Whether show the logo in sidebar
    */
-  sidebarLogo: false,
+  sidebarLogo: true,
 
-  showSettings:true
+  showSettings:true,
+
+  baseUrl:'http://192.168.1.123:8999/'
 }
   

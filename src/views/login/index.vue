@@ -42,6 +42,25 @@
         </span>
       </el-form-item>
 
+      <el-form-item prop="code">
+          <!-- <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span> -->
+          <el-input
+          ref="code"
+          v-model="loginForm.code"
+          placeholder="请输入验证码"
+          name="username"
+          type="text"
+          tabindex="3"
+          auto-complete="off"/>
+          <span @click="getCode">
+`             <img class="codeimage" :src="codesrc" ></img>
+          </span>
+      </el-form-item>
+
+      
+
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
       <!-- <div class="tips">
@@ -73,15 +92,23 @@ export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (value.length < 0) {
+      if (value.length <= 0) {
         callback(new Error('用户名不能为空'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 0) {
+      if (value.length <= 0) {
         callback(new Error('密码不能为空'))
+      } else {
+        callback()
+      }
+    }
+
+    const validateCode = (rule, value, callback) => {
+      if (value.length <= 0) {
+        callback(new Error('验证码不能为空'))
       } else {
         callback()
       }
@@ -89,18 +116,22 @@ export default {
     return {
       loginForm: {
         username: '',
-        password: ''
+        password: '',
+        code: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        code: [{ required: true, trigger: 'blur', validator: validateCode }],
       },
       loading: false,
       passwordType: 'password',
       redirect: undefined,
       dialogRoleVisible:false,
       rolelist:[],
-      currentRole:null
+      currentRole:null,
+      codesrc:'',
+      uuid:''
     }
   },
   watch: {
@@ -110,6 +141,10 @@ export default {
       },
       immediate: true
     }
+  },
+
+  created(){
+     this.getCode()
   },
   methods: {
     showPwd() {
@@ -122,11 +157,23 @@ export default {
         this.$refs.password.focus()
       })
     },
+    getCode(){
+       this.$api.post('system/getVerify',{}).then(resp =>{
+         this.codesrc = resp.image
+         this.uuid = resp.uuid
+       })
+    },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
+        let param = {
+          username: this.loginForm.username,
+          password:this.loginForm.password,
+          code:this.loginForm.code,
+          uuid:this.uuid
+        }
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
+          this.$store.dispatch('user/login', param).then(() => {
             let userinfo = getUserInfo()
             this.rolelist = userinfo.roleList
             // 多角色的话让用户选择角色 单角色的话直接进入
@@ -297,6 +344,15 @@ $light_gray:#eee;
     color: $dark_gray;
     cursor: pointer;
     user-select: none;
+  }
+
+  .codeimage{
+    width: 100px;
+    height:  40px;
+    position: absolute;
+    right: 5px;
+    top: 3px;
+    cursor: pointer;
   }
 }
 </style>

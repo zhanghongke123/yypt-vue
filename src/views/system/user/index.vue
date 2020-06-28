@@ -2,25 +2,7 @@
   <div class="user-container">
 
     <!-- 查询部分  -->
-    <el-form :inline="true" ref="queryform"  :model="queryconditions" size="small">
-      <el-form-item v-for="query in querycolumn" :label="query.label" :prop="query.prop" :key='"query"+query.prop'>
-              <el-input v-if="query.type == 'input'" v-model="queryconditions[query.prop]"></el-input>
-              <el-select v-else-if="query.type == 'select'" v-model="queryconditions[query.prop]">
-                    <el-option
-                      v-for="item in query.options"
-                      :key="item.key"
-                      :label="item.label"
-                      :value="item.key">
-                    </el-option>
-              </el-select>
-              <el-date-picker v-else v-model="queryconditions[query.prop]" type="datetime" :placeholder='"选择"+query.prop'> 
-              </el-date-picker>
-      </el-form-item>
-      <el-form-item>
-          <el-button type="primary" size="small"  @click="fetchData()">查询</el-button>
-          <el-button  size="small"  @click="resetQueryForm()">重置</el-button>
-      </el-form-item>
-    </el-form>
+  <YyptQuery :querycols="querycolumn" @query="query"></YyptQuery>
 
 
     <div style="height:35px">
@@ -34,6 +16,7 @@
         row-key="userId"
         height="70vh"
         border
+        stripe
         default-expand-all
         highlight-current-row
         @current-change="rowchange"
@@ -136,9 +119,9 @@
                     <el-select v-model="user.sex" clearable placeholder="请选择">
                       <el-option
                         v-for="item in sexoptions"
-                        :key="'select'+item.key"
+                        :key="'select'+item.value"
                         :label="item.label"
-                        :value="item.key">
+                        :value="item.value">
                       </el-option>
                     </el-select>
                 </el-form-item>
@@ -147,9 +130,9 @@
           
 
           <el-row>
-            <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+           <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
               <el-form-item prop="deptId" label= "所属部门">
-                      <el-cascader :props="{value:'id',label:'label',expandTrigger:'hover'}" :show-all-levels='false'
+                      <el-cascader :props="{value:'id',label:'label',expandTrigger:'hover',checkStrictly:true}" :show-all-levels='false'  :multiple="false"
                       v-model="user.deptId" :filter-method='filtdept' clearable filterable
                       :options="deptoptions">
                       </el-cascader>
@@ -176,6 +159,7 @@
 <script>
 import { list, deptTree, save, del } from '@/api/system/user'
 import { deepClone } from '@/utils'
+import YyptQuery from '@/components/YyptQuery'
 
 
 const defaultuser = {
@@ -200,14 +184,14 @@ const defaultuser = {
 
 
 const sexdict = [
-  { key: 1, label: "男" },
-  { key: 2, label: "女" }
+  { value: 1, label: "男" },
+  { value: 2, label: "女" }
 ]
 
 const statusdict = [
-    { key: 0, label: "停用" },
-    { key: 1, label: "启用" },
-    { key: 2, label: "冻结" }
+    { value: 0, label: "停用" },
+    { value: 1, label: "启用" },
+    { value: 2, label: "冻结" }
 
 ]
 
@@ -232,6 +216,9 @@ const querycolumn = [
 
 
   export default {
+    components:{
+      YyptQuery
+    },
     data () {
       const checkPhone = (rule, value, callback) => {
         if (!value) {
@@ -252,8 +239,8 @@ const querycolumn = [
         user: Object.assign({}, defaultuser),
         currentPage: 0,
         total: 0,
-        pagesizes:[100, 200, 300, 400],
-        pageSize:100,
+        pagesizes:[20, 40, 100],
+        pageSize:20,
         userlist:[],
         userlistLoading:false,
         sortField: "userId",
@@ -278,7 +265,6 @@ const querycolumn = [
       this.getDeptTree()
       this.fetchData()
     },
-
     methods: {
         click(command){
           //获取当前选中的角色
@@ -324,6 +310,11 @@ const querycolumn = [
           this.user = deepClone(currentRow)
         }
       },
+      query(val){
+        this.currentPage = 0
+        this.queryconditions = val
+        this.fetchData()
+      },
       fetchData(){
           this.userlistLoading = true
           const req = {
@@ -350,9 +341,11 @@ const querycolumn = [
           })
       },
       handleSizeChange(val){
+        this.pageSize = val
         this.fetchData()
       },
       handleCurrentChange(val){
+        this.currentPage = val
         this.fetchData()
       },
       resetQueryForm(){
@@ -411,7 +404,7 @@ const querycolumn = [
       getValueText(value, valname){
        let dict =  eval(valname)
        for(let info of dict){
-          if(info.key == value){
+          if(info.value == value){
              return info.label
           }
        }

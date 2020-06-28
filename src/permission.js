@@ -37,11 +37,18 @@ router.beforeEach(async(to, from, next) => {
         // 判断是否有角色信息
         if (!validatenull(currentrole) && getmenuflag == 0) {
          let routerdata =  await store.dispatch('getMenu', currentrole.roleId)
+         console.error(routerdata)
          initMenu(router, routerdata)
          next({ ...to, replace: true })
          
         }else{
-          next()
+          if(to.matched.length !== 0 ){
+              next()
+              //如果匹配到跳转下一页
+            }else{
+              //没有匹配到的话，跳转404
+                next({path:'/404'})
+            }
         }
 
       } catch (error) {

@@ -5,6 +5,9 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
+       <div class="right-menu-item"><span>部门:【 {{user.deptName}}】</span></div>
+       <div class="right-menu-item"><span>角色:【 {{role.roleName}}】</span></div>
+       <div class="right-menu-item"><span>欢迎【 {{user.realName}}】 登录</span></div>
 
 
       <template v-if="device!=='mobile'">
@@ -29,11 +32,36 @@
             </el-dropdown-item>
           </router-link>
           <el-dropdown-item divided>
+              <span style="display:block;" @click="dialogUpdatePwd = true">修改密码</span>
+          </el-dropdown-item>
+          <el-dropdown-item divided>
             <span style="display:block;" @click="logout">登出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+
+  <el-dialog width="30%" title="修改密码" :visible.sync="dialogUpdatePwd" :modal-append-to-body="false" :close-on-click-modal="false">
+    <el-form :model="pwdForm" ref="pwdForm" :rules="rules">
+      <el-form-item label="原  密  码" prop="oldPwd">
+        <el-input type="password" v-model="pwdForm.oldPwd"></el-input>
+      </el-form-item>
+      <el-form-item label="新密码" prop="newPwd1">
+        <el-input type="password" v-model="pwdForm.newPwd1"></el-input>
+      </el-form-item>
+      <el-form-item label="确认密码" prop="newPwd2">
+        <el-input type="password" v-model="pwdForm.newPwd2"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="dialogUpdatePwd = false">取 消</el-button>
+      <el-button type="primary" @click="confirmUpdatePwd">确 定</el-button>
+    </div>
+  </el-dialog>
+
+
+
+
   </div>
 </template>
 
@@ -56,11 +84,25 @@ export default {
     ...mapGetters([
       'sidebar',
       'device'
-    ])
+    ]),
+    user: user => JSON.parse(localStorage.getItem('userinfo')),
+    role: role => JSON.parse(localStorage.getItem('currentrole')),
+    roleList: roleList => JSON.parse(localStorage.getItem('userinfo')).roleList
   },
   data(){
     return {
-      avatar: require('@/assets/avatar/zhk.jpg')
+      avatar: require('@/assets/avatar/zhk.jpg'),
+      dialogUpdatePwd:false,
+      pwdForm:{
+        oldPwd:'',
+  			newPwd1:'',
+        newPwd2:''
+      },
+      rules:{
+          oldPwd:[{required:true,message:'请输入原密码',trigger:'blur'}],
+          newPwd1:[{required:true,message:'请输入新密码',trigger:'blur'}],
+          newPwd2:[{required:true,message:'请确认密码',trigger:'blur'}],
+      }
     }
   },
   methods: {
@@ -70,6 +112,31 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+
+    },
+    confirmUpdatePwd(){
+       this.$refs['pwdForm'].validate((valid) => {
+        if (valid) {
+            if(this.pwdForm.newPwd1 != this.pwdForm.newPwd2){
+                this.$message.error('两次密码不一致')
+                return false;
+            }
+            const req = {
+              username:this.user.userName,
+              oldPwd:this.pwdForm.oldPwd,
+              newPwd1:this.pwdForm.newPwd1,
+              newPwd2:this.pwdForm.newPwd2
+            }
+            this.$api.post('sysuser/updatePwd',req).then(resp =>{
+              this.dialogUpdatePwd = false
+              this.logout()
+            })
+
+            
+          } else {
+            return false;
+          }
+        });
 
     }
   }

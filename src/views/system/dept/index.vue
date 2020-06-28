@@ -21,6 +21,7 @@
         row-key="deptId"
         height="80vh"
         border
+        stripe
         default-expand-all
         highlight-current-row
         @current-change="rowchange"

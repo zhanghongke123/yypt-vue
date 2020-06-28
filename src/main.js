@@ -19,9 +19,13 @@ import '@/permission' // permission control
 
 import permission from '@/directive/permission/index.js' // 权限判断指令
 
+import eldragdialog from '@/directive/el-drag-dialog/index.js' // 拖拽dialog
+
 import * as filters from './filters' // global filters
 
 Vue.use(permission)
+
+Vue.use(eldragdialog)
 
 import api from '@/api/common/commonapi.js'
 Vue.prototype.$api = api

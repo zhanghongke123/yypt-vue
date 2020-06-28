@@ -7,6 +7,7 @@
         row-key="loginId"
         height="70vh"
         border
+        stripe
         highlight-current-row
         v-loading="listLoading">
     
@@ -16,14 +17,14 @@
       <el-table-column prop="userName" label="用户名" width="100" align="center"> 
       </el-table-column>
       
-      <el-table-column prop="loginTime" label="登录日期" width="150" align="center">
+      <el-table-column prop="loginTime" label="登录日期" width="180" align="center">
       </el-table-column>
 
-      <el-table-column prop="location" label="登录地址" width="180" align="center">
+      <el-table-column prop="location" label="登录地址" width="200" align="center">
       </el-table-column>
 
 
-      <el-table-column prop="ip" label="登录IP" width="180" align="center">
+      <el-table-column prop="ip" label="登录IP" width="200" align="center">
       </el-table-column>
 
     </el-table>
@@ -60,8 +61,8 @@ import YyptQuery from '@/components/YyptQuery'
           datalist:[],
           currentPage: 0,
           total: 0,
-          pagesizes:[100, 200, 300, 400],
-          pageSize:100,
+          pagesizes:[20, 40, 100],
+          pageSize:20,
           queryconditions:{},
           sortField:''
       };
@@ -75,13 +76,16 @@ import YyptQuery from '@/components/YyptQuery'
 
     methods: {
       handleSizeChange(val){
+        this.pageSize = val
         this.fetchData()
       },
       handleCurrentChange(val){
+        this.currentPage = val
         this.fetchData()
       },
       query(res){
           this.queryconditions = res
+          this.currentPage = 0
           this.fetchData()
       },
       
