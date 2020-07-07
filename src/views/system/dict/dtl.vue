@@ -294,7 +294,7 @@ const defaultData = {
   padding: 10px;
 }
 .buttongroup{
-  margin-left: -40px;
+  padding: 5px;
 }
 
 </style>

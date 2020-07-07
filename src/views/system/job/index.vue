@@ -75,7 +75,7 @@
            </template>
         </el-table-column>
 
-        <el-table-column fixed='right' width="300" align="center" label="操作">
+        <el-table-column fixed='right' width="310" align="center" label="操作">
             <template slot-scope="scope">
                 <el-button class="buttongroup" v-permission='"job:edit"' type="text"  round icon="el-icon-edit"   @click="edit(scope.row)">修改</el-button>
                 <el-button class="buttongroup"  v-permission='"job:start"' type="text"  round icon="el-icon-video-play" @click="resume(scope.row)">启动</el-button>
@@ -304,7 +304,7 @@ import YyptCron from "@/components/YyptCron";
 }
 
 .buttongroup{
-  margin-left: -40px;
+  padding: 5px;
 }
 
 
