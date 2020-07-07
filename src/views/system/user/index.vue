@@ -9,6 +9,8 @@
               <yypt-button v-permission='"user:add"' permission='user:add' @click="click('新增')"></yypt-button>
               <yypt-button v-permission='"user:edit"' permission='user:edit' @click="click('修改')"></yypt-button>
               <yypt-button v-permission='"user:delete"' permission='user:delete' @click="click('删除')"></yypt-button>
+              <yypt-button v-permission='"user:respassword"' permission='user:respassword' @click="click('重置密码')"></yypt-button>
+
     </div>
     <el-table :data="userlist"         
         ref="usertable"
@@ -153,6 +155,24 @@
         </div> 
     </el-dialog>
 
+
+
+    <el-dialog :title="'重置'+user.userName+'的密码'" :visible.sync="showpassword" >
+      <el-form>
+          <el-row>
+            <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                <el-form-item label="新密码:">
+                   <el-input v-model="newpass" placeholder="请输入密码"></el-input>
+                </el-form-item>
+            </el-col>
+          </el-row>
+      </el-form>  
+      <div slot="footer" class="dialog-footer" style="text-align:center">
+          <el-button @click="showpassword = false">取 消</el-button>
+          <el-button :loading="saveing"  type="primary" @click="handpassword()">确定</el-button>
+      </div> 
+    </el-dialog>
+
   </div>
 </template>
 
@@ -259,6 +279,8 @@ const querycolumn = [
         title:'',
         userEdit: false,
         saveing:false,
+        showpassword:false,
+        newpass:''
       };
     },
     created(){
@@ -301,6 +323,9 @@ const querycolumn = [
                     }).catch(err => {
                         console.error(err)
                     })   
+          }else if(command == '重置密码'){
+              this.newpass = ''
+              this.showpassword = true
           }
       },
       rowchange(currentRow,oldRow){
@@ -371,6 +396,24 @@ const querycolumn = [
                   })
               }
           })
+      },
+      handpassword(){
+         this.saveing = true
+         let user = deepClone(this.user)
+         user.deptId = this.user.deptId[this.user.deptId.length - 1]
+         user.userPassword = this.newpass
+         this.$api.post('sysuser/respassword',user).then(resp =>{
+              this.saveing = false
+              this.$message({
+                type:'success',
+                message:`重置密码(${this.newpass})成功`
+              })
+              this.showpassword = false
+         }).catch(e =>{
+           console.error(e)
+           this.saveing = false
+         })
+
       },
       filtdept(node, keyword){
           console.log(node)

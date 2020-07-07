@@ -1,13 +1,14 @@
 <template>
   <div>
        <el-form :inline="true" ref="queryform"  :model="queyResult" size="small">
-         <el-form-item v-for="query in querycols" :label="query.label" :prop="query.prop" :key='"query"+query.prop'>
+         <el-form-item v-for="query in curquerycols" :label="query.label" :prop="query.prop" :key='"query"+query.prop'>
             <el-input v-if="query.type == 'input'" v-model="queyResult[query.prop]"></el-input>
             <el-input v-else-if="query.type == 'number'" v-model.number="queyResult[query.prop]"  @change="toNumber($event,query.prop)"></el-input>
-            <el-select v-else-if="query.type == 'select'" v-model="queyResult[query.prop]">
+            <el-select :key="query.prop" filterable clearable v-else-if="query.type == 'select'" v-model="queyResult[query.prop]" @change="selectchange($event,query.prop)">
                   <el-option
                     v-for="item in query.options"
-                    :key="item.value"
+                    :value-key="query.prop+''+item.value"
+                    :key="query.prop+''+item.value"
                     :label="item.label"
                     :value="item.value">
                   </el-option>
@@ -30,23 +31,49 @@
     props:['querycols'],
     data () {
       return {   
-         queyResult:{}
+         queyResult:this.creatres(this.querycols),
+         curquerycols:this.querycols
       };
     },
-    omponents: {},
+
+    watch:{
+       querycols:{
+         handler(value){
+           this.curquerycols = value
+         },
+         immediate:true,
+         deep:true
+       }
+    },
+    
     methods: {
+        creatres(querycols) {
+            let res = {}
+            querycols.forEach(item =>{
+               res[item.prop] = null
+            })
+            return res
+        },
         query(){
             //点击查询
             this.$emit("query",this.queyResult)
         },
         resetQueryForm(){
             //重置表单
-            this.queyResult = {}
+            this.$refs['queryform'].resetFields();
+            this.$emit('reset')
         },
         toNumber(value,prop){
            let num = value.replace(/[^0-9]/ig,"")
            this.queyResult[prop] = num
+        },
+        selectchange(value,prop){
+          this.$emit("selectchange",{
+            prop,
+            value
+          })
         }
+
     },
 
   }

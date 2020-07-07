@@ -2,9 +2,8 @@
   <div class="container">
      
       
-      <el-row style="text-align:right;margin-top:8px;">
-              <yypt-button v-permission='"dict:add"' permission='dict:add' @click="click('新增字典')"></yypt-button>
-              <YyptQuery :querycols="querycols" @query="query"></YyptQuery>
+      <el-row style="text-align:right;">
+              <yypt-button v-permission='"sysdictdtl:add"' permission='sysdictdtl:add' @click="click('新增字典值')"></yypt-button>
       </el-row>
          
 
@@ -12,30 +11,41 @@
 
       <el-table :data="datalist"
         ref="datatable"         
-        style="margin-top:-15px;"
         row-key="id"
-        height="30vh"
+        height="40vh"
+        style="margin-top:5px;"
         border
         stripe
         highlight-current-row
-        v-loading="listLoading" @current-change="rowchange">
+        v-loading="listLoading">
+
     
      
 
-      <el-table-column  label="字典ID" width="70" align="center"> 
+      <el-table-column  label="ID" width="70" align="center"> 
           <template slot-scope="scope">
-                {{scope.row.dictId}}
+                {{scope.row.dictDtlId}}
           </template>
       </el-table-column>
       
-      <el-table-column  label="字典名称" width="200" align="center">
+      <el-table-column  label="名称" width="200" align="center">
           <template slot-scope="scope">
-                  {{scope.row.dictName}}
+                  {{scope.row.label}}
           </template>
       </el-table-column>
 
 
-      <el-table-column prop="dictMemo" label="备注" width="90" align="center" show-overflow-tooltip="">
+
+      <el-table-column  label="字典值" width="200" align="center">
+          <template slot-scope="scope">
+                  {{scope.row.value}}
+          </template>
+      </el-table-column>
+
+      <el-table-column prop="orderNo" label="排序" width="90" align="center" show-overflow-tooltip="">
+      </el-table-column>
+
+      <el-table-column prop="memo" label="备注" width="90" align="center" show-overflow-tooltip="">
       </el-table-column>
 
 
@@ -47,25 +57,16 @@
       </el-table-column>
 
 
-       <el-table-column  label="状态" width="83" align="center">
-        <template slot-scope="scope">
-              <el-tag effect="dark" :type="scope.row.dictStatus === 1?'success':'danger'" size="mini" >
-                {{scope.row.dictStatus === 0 ?'停用':'启用'}}
-              </el-tag>
-        </template>
+      <el-table-column prop="dictId" label="字典ID" width="90" align="center">
+
       </el-table-column>
 
 
-      <el-table-column prop="dictType" label="字典类型" width="80" align="center">
-          <template slot-scope="scope">
-            {{ scope.row.dictType | getValueText('dicttype')}}
-          </template>        
-      </el-table-column>
 
       <el-table-column label="操作" :width="180"  align="center"  >
         <template slot-scope="scope" >
-            <el-button class="buttongroup" v-permission='"dict:edit"' type="text"  round icon="el-icon-edit"   @click="click('修改',scope)">修改</el-button>   
-            <el-button  class="buttongroup"  v-permission='"dict:delete"' type="text"  round icon="el-icon-delete"  @click="click('删除',scope)">删除</el-button>
+            <el-button class="buttongroup" v-permission='"dictdtl:edit"' type="text"  round icon="el-icon-edit"   @click="click('修改',scope)">修改</el-button>   
+            <el-button  class="buttongroup"  v-permission='"dictdtl:delete"' type="text"  round icon="el-icon-delete"  @click="click('删除',scope)">删除</el-button>
         </template>
       </el-table-column> 
 
@@ -84,9 +85,21 @@
         <el-form :model="data" ref="dataForm"  :rules="rules" label-width="90px" size='small'>
 
           <el-row>
-            <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                <el-form-item prop="dictName" label="字典名称:">
-                   <el-input v-model="data.dictName" placeholder="请输入字典名称"></el-input>
+            <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+                <el-form-item prop="label" label="名称:">
+                   <el-input v-model="data.label" placeholder="请输入选项名称"></el-input>
+                </el-form-item>
+            </el-col>
+
+            <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+                <el-form-item prop="value" label="字典值:">
+                   <el-input v-model="data.value" placeholder="请输入字典值"></el-input>
+                </el-form-item>
+            </el-col>
+
+            <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+                <el-form-item prop="orderNo" label="排序:">
+                   <el-input v-model="data.orderNo" placeholder="请输入排序号"></el-input>
                 </el-form-item>
             </el-col>
             
@@ -95,38 +108,10 @@
 
 
 
-
-          <el-row>
-            <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item prop="dictType" label="字典类型:">
-                    <el-select  filterable clearable  v-model="data.dictType" >
-                        <el-option
-                          v-for="item in dicttype"
-                          :key="'dictType'+item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-            </el-col>
-
-
-            <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <el-form-item prop="dictStatus" label="是否启用:">
-                    <el-switch
-                      v-model="data.dictStatus"
-                      :active-value="Number('1')"
-                      :inactive-value="Number('0')">
-                    </el-switch>
-                </el-form-item>
-            </el-col>
-          </el-row>
-
-
           <el-row>
             <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                <el-form-item prop="dictMemo" label="备注:">
-                   <el-input v-model="data.dictMemo" placeholder="请输入字典备注"></el-input>
+                <el-form-item prop="memo" label="备注:">
+                   <el-input v-model="data.memo" placeholder="请输入字典备注"></el-input>
                 </el-form-item>
             </el-col>
           </el-row>
@@ -137,60 +122,40 @@
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align:center">
           <el-button @click="dialogVisible = false" icon="el-icon-circle-close">取 消</el-button>
-          <el-button :loading="saveing"  type="primary" icon="el-icon-circle-check" @click="handMasterSave()">保存</el-button>
+          <el-button :loading="saveing"  type="primary" icon="el-icon-circle-check" @click="handSave()">保存</el-button>
         </div> 
     </el-dialog>
-
-
-
-
-
-
-    <sysdictDtl ref="dtl" :masterdata='data'></sysdictDtl>
-
     
   </div>
 </template>
 
 <script>
-import YyptQuery from '@/components/YyptQuery'
 import { deepClone } from '@/utils'
-import sysdictDtl from './dtl'
 
 
 const defaultData = {
+    dictDtlId:null,
     dictId:null,
-    dictName:null,
-    dictMemo:null,
-    dictStatus:1,
-    dictType:2,
+    label:null,
+    value:null,
+    memo:'',
+    orderNo:null,
     createTime:null,
     updateTime:null
 }
 
   export default {
-    name:'sysdict',
+    name:'sysdict-dtl',
+    props:{
+        masterdata:{
+            type:Object
+        }
+    },
     components:{
-      YyptQuery,
-      sysdictDtl
+      
     },
     data () {
       return {
-          querycols:[
-            {
-                prop:"dictName",
-                label:"字典名称",
-                type:"input"
-            },
-            {
-                prop:"dictType",
-                label:"字典类型",
-                type:"select",
-                options:this.$dict.dicttype
-
-
-            }
-          ],
           datalist:[],
           currentPage: 0,
           total: 0,
@@ -201,25 +166,23 @@ const defaultData = {
           dialogVisible:false,
           data:Object.assign({},defaultData),
           rules:{
-              dictName:[{required:true,message:'字典名称必须输入',trigger:'blur'}],
-              dictType:[{required:true,message:'字典类型必须输入',trigger:'blur'}],
+              label:[{required:true,message:'名称必须输入',trigger:'blur'}],
+              value:[{required:true,message:'字典值必须输入',trigger:'blur'}],
            },
           title:'',
           saveing:false,
-          showUserRep:false,
           action:'',
-          rightCellWidth:10
+          rightCellWidth:10,
+          listLoading:false
       };
     },
     created(){
-      this.fetchData()
+      // this.fetchData()
       // this.rightCellWidth = this.$router.meta.buttonList
       this.rightCellWidth = this.$route.meta.buttons.filter( item => item.orderCode !== -1 ).length * 80
     },
     computed:{
-       dicttype(){
-         return this.$dict.dicttype
-       }
+       
     },
     mounted(){
     },
@@ -230,17 +193,18 @@ const defaultData = {
           if(command === '修改'){
              this.action = 'edit'
              this.data = deepClone(scope.row)
-             this.title = `修改【${this.data.dictName}】`
+             this.title = `修改【${this.data.label}】`
              this.dialogVisible = true
              this.$nextTick(() => {
                 this.$refs['dataForm'].clearValidate()
              }) 
-          }else if(command === '新增字典'){
+          }else if(command === '新增字典值'){
              this.action = 'add'
              this.data = Object.assign({},defaultData)
-             this.title = "新增字典"
+             this.title = "新增字典值"
              this.dialogVisible = true
              this.$nextTick(() => {
+               this.data.dictId = this.masterdata.dictId
                 this.$refs['dataForm'].clearValidate()
              }) 
           }else if(command === '删除'){
@@ -256,27 +220,18 @@ const defaultData = {
         this.currentPage = val
         this.fetchData()
       },
-      rowchange(currentRow,oldCurrentRow){
-          if(currentRow != null){
-              this.data = deepClone(currentRow)
-              this.$nextTick(()=>{
-                this.$refs['dtl'].fetchData()
-              })
-          }
- 
-      },
       query(res){
           this.queryconditions = res
           this.currentPage = 0
           this.fetchData()
       },
       delete(scope){
-        this.$confirm(`是否删除【${this.data.dictName}】`, '警告', {
+        this.$confirm(`是否删除【${this.data.label}】`, '警告', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
           }).then(async() => {
-            await this.$api.post('sysdict/delete',this.data)
+            await this.$api.post('sysdictdtl/delete',this.data)
             this.$message({
               type: 'success',
               message: '删除成功'
@@ -289,6 +244,9 @@ const defaultData = {
       },
       fetchData(){
         this.listLoading = true
+        // console.error("总单数据为:"+JSON.stringify(this.masterdata))
+        this.data.dictId = this.masterdata.dictDtlId
+        this.queryconditions.dictId = this.masterdata.dictId
         const req = {
           pageSize: this.pageSize,
           pageNum: this.currentPage,
@@ -296,24 +254,20 @@ const defaultData = {
           sortOrder: '',
           querylist: this.queryconditions
         }
-        this.$api.post('sysdict/list',req).then(resp =>{
+        this.$api.post('sysdictdtl/list',req).then(resp =>{
             this.total = resp.total
             this.datalist = resp.records
             this.listLoading = false
             if(this.datalist.length > 0){
                 this.$refs['datatable'].setCurrentRow(this.datalist[0])
-            }else{
-                 this.$nextTick(()=>{
-                    this.$refs['dtl'].datalist = []
-                  })
             }
         })
 
       },
-      handMasterSave(){
+      handSave(){
         this.$refs['dataForm'].validate((valid) =>{
           if(valid){
-              this.$api.post('sysdict/save',this.data).then(resp =>{
+              this.$api.post('sysdictdtl/save',this.data).then(resp =>{
                 this.$message({
                   type:'success',
                   message:'保存成功'
@@ -323,7 +277,7 @@ const defaultData = {
                 if(this.action === 'add'){
                    this.datalist.unshift(resp)
                 }else if(this.action == 'edit'){
-                   const index = this.datalist.findIndex(v => v.dictId === resp.dictId)
+                   const index = this.datalist.findIndex(v => v.dictDtlId === resp.dictDtlId)
                    this.datalist.splice(index, 1, resp)
                 }
               })
