@@ -1,26 +1,26 @@
 <template>
   <div> 
-      <el-row style="text-align:right;margin-top:8px;">
-              <el-col :span="6">
-                <slot name="topButton">
-                     
-                </slot>
+      <el-row style="padding:5px;" type="flex"  justify="space-between" v-if="querycolumn">
+              <el-col :span="5">
+                 <slot name="topButton">
+                 </slot>
               </el-col>
-              <el-col :span="18">
-                  <YyptQuery ref="yyptquery" :querycols="querycolumn" @query="query" @reset='resetQueryForm'></YyptQuery>
+              <el-col :span="19" >
+                  <YyptQuery ref="yyptquery" :querycols="querycolumn" @query="query"  @reset='resetQueryForm'></YyptQuery>
               </el-col>
       </el-row>
 
-      <el-row>
+      <el-row v-if="datacolumn">
 
-       <el-table stripe ref="table" v-loading="listLoading" 
+       <el-table  ref="table"  v-loading="listLoading" height="50vh" stripe
         :data="data" 
-        height="50vh" 
         @cell-dblclick="dblclick" 
         @selection-change="handleSelectionChange" 
         @current-change="rowchange" border highlight-current-row >
           <el-table-column v-if="multiselect" type="selection" width="55"></el-table-column>
-          <el-table-column v-for="col in datacolumn" :key="col.prop"  :width="col.width" align="center" :label="col.label">
+          <el-table-column v-for="col in datacolumn" :key="col.prop"  :width="col.width"
+               :fixed="col.fixed === null ? 'false':col.fixed "
+               align="center" :label="col.label" >
               <template slot-scope="scope">
                 <slot :name="col.prop" :scope="scope">
                     <span v-if="col.iscombox">{{ getcomboxvalue(col.comboxvalue, scope.row[col.prop]) }}</span>
@@ -35,10 +35,11 @@
 
 
 
-        <div style="text-align:center;">
-            <el-button type="primary" size="small"  @click="confirm()">确认已选</el-button>
-            <el-button  size="small"  @click="cancel()">取消</el-button>
-        </div>
+    <div style="text-align:center;" v-if="showbottom">
+        <el-button type="primary" size="small"  @click="confirm()">确认已选</el-button>
+        <el-button  size="small"  @click="cancel()">取消</el-button>
+    </div>
+
     <el-pagination background :page-sizes="pagesizes" :current-page="currentPage" @size-change="handleSizeChange" :page-size="pageSize"
       @current-change="handleCurrentChange"
       layout="total, sizes, prev, pager, next, jumper"
@@ -50,20 +51,16 @@
 
 <script>
 import YyptQuery from '@/components/YyptQuery'
-const userrep =  require('./userrep.json')
-import { userRep } from '@/api/system/role'
+
 
   export default {
     name:'YyptTable',
-    props:['queryRoleId'],
+    props:['queryRoleId','pageconfig'],
     components:{
         YyptQuery
     },
     data () {
       return {
-         multiselect:userrep.multiselect,
-         querycolumn: userrep.querycolumn,
-         datacolumn: userrep.datacolumn,
          listLoading: false,
          data:[],
          queryconditions:{},
@@ -76,6 +73,26 @@ import { userRep } from '@/api/system/role'
          selectrows: [],
          currenRow:{}
       };
+    },
+    computed:{
+      multiselect(){
+        return this.pageconfig.multiselect
+      },
+      querycolumn(){
+        return this.pageconfig.querycolumn
+      },
+      datacolumn(){
+        return this.pageconfig.datacolumn
+      },
+      showbottom(){
+        return this.pageconfig.showbottom
+      },
+      queryurl(){
+        return this.pageconfig.queryurl
+      },
+      config(){
+        return this.pageconfig
+      }
     },
     methods:{
         getcomboxvalue(item, value){
@@ -92,7 +109,7 @@ import { userRep } from '@/api/system/role'
           this.currentPage = val
           this.fetchData()
         },
-        fetchData(){
+        async fetchData(){
           this.listLoading = true
           this.queryconditions.queryRoleId = this.queryRoleId
           const req = {
@@ -102,7 +119,7 @@ import { userRep } from '@/api/system/role'
             sortOrder: this.sortOrder,
             querylist: this.queryconditions
           }
-          userRep(req).then( data =>{
+          await this.$api.post(this.queryurl,req).then( data =>{
               this.data = data.records
               this.total = data.total
               this.listLoading = false
@@ -113,10 +130,19 @@ import { userRep } from '@/api/system/role'
               console.log(err)
           })
       },
-      query(res){
+      async query(res){
+
+          this.$refs['yyptquery'].disable(true)
           this.queryconditions = res
           this.currentPage = 0
-          this.fetchData()
+          await this.fetchData()
+          this.querycolumn.forEach(item =>{
+                item.isdisabled = false
+          })
+          this.$refs['yyptquery'].disable(false)
+          this.$refs['yyptquery'].isquerying = false
+
+
       },
       resetQueryForm(){
         this.queryconditions = {}
@@ -130,11 +156,13 @@ import { userRep } from '@/api/system/role'
       confirm(){
         if(this.multiselect){
           //支持多选的话
-          this.$emit('ok', this.selectrows)
+          
         }else{
           //当前行
-          this.$emit('ok', [this.currenRow])
+          this.selectrows = [this.currenRow]
         }
+        this.$emit('ok', this.selectrows)
+
       },
       cancel(){
         this.$emit('cancel')
