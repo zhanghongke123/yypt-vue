@@ -27,7 +27,7 @@ import store from '../store'
       if (!validatenull(component)) {
         const oRouter = {
           path: path,
-          component: component === 'Layout' ? () => import('@/layout/index') : () => import(`@/views/${component}`),//'@/views/form/index'`@/views/${component}`
+          component: component === 'Layout' ? () => import('@/layout/index') : () => Promise.resolve(require(`@/views/${component}`).default),//'@/views/form/index'`@/views/${component}`
           name: name,
           meta: meta,
           icon: icon,
