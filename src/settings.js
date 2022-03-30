@@ -16,6 +16,6 @@ module.exports = {
 
   showSettings:true,
 
-  baseUrl:'http://192.168.1.123:8999/'
+  baseUrl:'http://192.168.1.108:8999/'
 }
   
