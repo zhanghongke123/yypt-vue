@@ -13,4 +13,21 @@ $vxe-table-header-font-color: #606266;
 $vxe-table-row-height-default: 30px;
 
 
+$vxe-modal-header-background-color: #409EFF !default;
+
+
 // ...
+.vxe-modal--title{
+    color: #ffffff;
+}
+
+.vxe-modal--close-btn{
+    color: #ffffff;
+}
+
+
+.vxe-modal--close-btn {
+    &:hover {
+      color: #ff0000 !important;
+    }
+  }

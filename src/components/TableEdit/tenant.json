@@ -1,0 +1,18 @@
+{
+    "title":"选择租户",
+    "queryUrl":"/system/sys-tenant/list",
+    "tableColumn":[
+        { "type": "checkbox", "width": 50 },
+        { "field": "tenantId", "title": "租户ID","width": 150 },
+        { "field": "tenantName", "title": "租户名称","width": 400  }
+    ],
+    "queryFormConfig": {
+        "titleWidth": 120,
+        "titleAlign": "right",
+        "items": [
+          { "field": "tenantId", "title": "租户ID:", "span": 6, "itemRender": { "name": "$input", "props": { "placeholder": "" } } },
+          { "field": "tenantName", "title": "租户名称:", "span": 6, "itemRender": { "name": "$input", "props": { "placeholder": "" } } },
+          { "span": 6, "align": "center", "collapseNode": false, "itemRender": { "name": "$buttons", "children": [{ "props": { "type": "submit", "content": "查询", "status": "primary"} }, { "props": { "type": "reset", "content": "重置" } }] } }
+        ]
+    }
+}

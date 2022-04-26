@@ -9,6 +9,14 @@ export const post = (url,data) => {
     })
 }
 
+export const get = (url,data) => {
+	return  request({
+        url:url,
+        method: 'get',
+        params: data
+    })
+}
+
 export const fileupload = (url,data) =>{
 
     return request({
@@ -65,6 +73,7 @@ export const filedownload = (url,realfilename,data) =>{
 
 export default {
     post,
+    get,
     fileupload,
     filedownload
 }

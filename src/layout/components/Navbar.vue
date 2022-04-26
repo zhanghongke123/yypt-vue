@@ -5,9 +5,9 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
-       <div class="right-menu-item"><span>部门:【 {{user.deptName}}】</span></div>
-       <div class="right-menu-item"><span>角色:【 {{role.roleName}}】</span></div>
-       <div class="right-menu-item"><span>欢迎【 {{user.realName}}】 登录</span></div>
+       <div class="right-menu-item"><i class="iconfont icon-bumenguanli"></i><span class="content">{{user.deptName}}</span></div>
+       <div class="right-menu-item"><i class="iconfont icon-pingtai"></i><span class="content">{{role.roleName}}</span></div>
+       <div class="right-menu-item"><i class="iconfont icon-renyuan"></i><span class="content">{{user.realName}}</span></div>
 
 
       <template v-if="device!=='mobile'">
@@ -91,7 +91,7 @@ export default {
   },
   data(){
     return {
-      avatar: require('@/assets/avatar/zhk.jpg'),
+      avatar: require('@/assets/avatar/avatar.jpg'),
       dialogUpdatePwd:false,
       pwdForm:{
         oldPwd:'',
@@ -192,6 +192,11 @@ export default {
         &:hover {
           background: rgba(0, 0, 0, .025)
         }
+      }
+
+      .content{
+        font-size: 16px;
+        margin-left: 5px;
       }
     }
 

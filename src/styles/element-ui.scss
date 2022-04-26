@@ -1,5 +1,7 @@
 // cover some element-ui styles
 
+$select-color:#bae7ff;
+
 .el-breadcrumb__inner,
 .el-breadcrumb__inner a {
   font-weight: 400 !important;
@@ -72,13 +74,28 @@
 
 .el-table--striped .el-table__body tr.el-table__row--striped.current-row td, 
 .el-table__body tr.current-row>td {
-  background-color: #dff0d8;
+  background-color: $select-color;
   color: #000000;
 }
 
 
 .el-dialog__header {
-  font-size: 14px;
+  font-size: 12px;
+  color: #ffffff;
+  background-color: #409EFF;
+  padding: 5px 5px 5px 5px;
+}
+
+.el-dialog__title{
+  color: #ffffff;
+}
+
+.el-dialog__headerbtn{
+  top: 6px;
+}
+
+.el-dialog__close{
+  background-color: #ffffff;
 }
 
 .el-dialog__body {
@@ -100,6 +117,7 @@
 
 //修改el-tree选中的背景色
 .el-tree-node.is-current > .el-tree-node__content {
-  background-color: #dff0d8 !important;
+  background-color: $select-color !important;
   color: #000000;
 }
+

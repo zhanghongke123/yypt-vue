@@ -6,9 +6,6 @@
               <yypt-button v-permission='"sysdictdtl:add"' permission='sysdictdtl:add' @click="click('新增字典值')"></yypt-button>
       </el-row>
          
-
-
-
       <el-table :data="datalist"
         ref="datatable"         
         row-key="id"
@@ -20,8 +17,7 @@
         v-loading="listLoading">
 
     
-     
-
+    
       <el-table-column  label="ID" width="70" align="center"> 
           <template slot-scope="scope">
                 {{scope.row.dictDtlId}}

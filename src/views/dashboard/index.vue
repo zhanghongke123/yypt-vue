@@ -1,6 +1,6 @@
 <template>
   <div>
-     <vxe-grid  v-bind="gridOptions2"></vxe-grid>
+     <svg-icon icon-class="home" class-name="home"></svg-icon>
   </div>
 </template>
 
@@ -67,6 +67,10 @@
   }
 
 </script>
-<style lang='' scoped>
+<style lang='scss' scoped>
+.home{
+  width: 100%;
+  height: 80vh;
+}
 
 </style>

@@ -1,6 +1,10 @@
 <template>
-  <div>
-      <YyptQuery :querycols="querycols" @query="query"></YyptQuery>
+  <div class="container">
+      <YyptQuery  
+       ref="yyptquery"
+       :querycols="querycols" 
+       @query="query">
+       </YyptQuery>
 
       <el-table :data="datalist"         
         style="width: 100%;"
@@ -102,6 +106,11 @@ import YyptQuery from '@/components/YyptQuery'
             this.datalist = resp.records
             this.total = resp.total
             this.listLoading = false
+            this.$refs['yyptquery'].disable(false)
+            this.$refs['yyptquery'].isquerying = false
+        }).catch(e =>{
+            this.$refs['yyptquery'].disable(false)
+            this.$refs['yyptquery'].isquerying = false
         })
 
       }
@@ -112,6 +121,9 @@ import YyptQuery from '@/components/YyptQuery'
   }
 
 </script>
-<style lang='' scoped>
+<style lang='scss' scoped>
+.container{
+  padding: 10px;
+}
 
 </style>

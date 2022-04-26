@@ -4,7 +4,7 @@
       
       <el-row style="text-align:right;margin-top:8px;">
               <yypt-button v-permission='"dict:add"' permission='dict:add' @click="click('新增字典')"></yypt-button>
-              <YyptQuery :querycols="querycols" @query="query"></YyptQuery>
+              <YyptQuery :querycols="querycols" @query="query" ref="yyptquery"></YyptQuery>
       </el-row>
          
 
@@ -307,6 +307,12 @@ const defaultData = {
                     this.$refs['dtl'].datalist = []
                   })
             }
+
+            this.$refs['yyptquery'].disable(false)
+            this.$refs['yyptquery'].isquerying = false
+        }).catch( e =>{
+            this.$refs['yyptquery'].disable(false)
+            this.$refs['yyptquery'].isquerying = false      
         })
 
       },

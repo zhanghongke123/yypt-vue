@@ -12,6 +12,9 @@ import '@/styles/index.scss' // global css
 
 import YyptButton from '@/components/YyptButton/index.js'
 
+import '@/components/TableEdit/index.js'
+
+
 import App from './App'
 import store from './store'
 import router from './router'
@@ -62,7 +65,7 @@ Vue.use(VXETable)
 
 
 VXETable.setup({
-  zIndex:9990
+  zIndex:999
 })
 
 

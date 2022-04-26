@@ -7,16 +7,16 @@ import settings from '@/settings'
 // create an axios instance
 const service = axios.create({
   // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  baseURL: settings.baseUrl, // url = base url + request url
+  baseURL: process.env.NODE_ENV === 'development'? settings.baseUrl : window.location.origin+"/Api",
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 50000 // request timeout
+  timeout: 120000 // request timeout
 })
 
 // request interceptor
 service.interceptors.request.use(
   config => {
     if (store.getters.token) {
-      config.headers['Authentication_TOKEN'] = getToken()
+      config.headers['token'] = getToken()
     }
     return config
   },
@@ -41,6 +41,10 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
+
+    if(response.data instanceof Blob){
+      return response.data
+    }
 
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 0) {

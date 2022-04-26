@@ -17,13 +17,24 @@ export default {
     const vnodes = []
 
     if (icon) {
-      vnodes.push(<svg-icon icon-class={icon}/>)
+      vnodes.push(<svg-icon icon-class={icon} class="item-icon"/>)
     }
 
     if (title) {
-      vnodes.push(<span slot='title'>{(title)}</span>)
+      vnodes.push(<span slot='title' class="title">{(title)}</span>)
     }
     return vnodes
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.item-icon{
+  font-size: 20px;
+  vertical-align: -0.15em;
+}
+
+.title{
+}
+
+</style>

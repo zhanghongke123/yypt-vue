@@ -1,0 +1,54 @@
+{
+    "height":"85vh",
+    "queryUrl":"/sysuser/list",
+    "saveUrl":"/sysuser/save",
+    "deleteUrl":"/sysuser/batchDelete",
+    "tableColumn":[
+        { "type": "checkbox", "width": 50 },
+        { "field": "userId", "title": "用户ID","width": 70 },
+        { "field": "userName", "title": "账号","width": 100 },
+        { "field": "realName", "title": "真实姓名","width": 100 },
+        { "field": "deptName", "title": "部门名称","width": 100 },
+        { "field": "rolenames", "title": "角色集合","width": 100 },
+        { "field": "tenantName", "title": "租户名称","width": 100 },
+        { "field": "mobile", "title": "手机号","width": 120 },
+        { "field": "sex", "title": "性别","width": 50,"dictCode":"sex" },
+        { "field": "status", "title": "状态","width": 50,"dictCode":"userStatus"},
+        { "field": "idcard", "title": "身份证号","width": 150},
+        { "field": "openid", "title": "openid","width": 200},
+        { "field": "memo", "title": "备注","width": 200},
+        { "field": "deptId", "title": "部门ID","width": 70 },
+        { "field": "tenantId", "title": "租户ID","width": 70 },
+        { "field": "roleids", "title": "角色ID集合","width": 70 },
+        { "field": "avatar", "title": "头像","width": 150 },
+        { "field": "lockTime", "title": "锁定时间","width": 200},
+        { "field": "createTime", "title": "创建时间","width": 200},
+        { "field": "updateTime", "title": "更新时间","width": 200}
+    ],
+    "queryItems": [
+        { "field": "status", "title": "状态:", "span": 4,"dictCode":"userStatus" },
+        { "field": "userName", "title": "账号:", "span": 4,"itemRender": { "name": "$input", "props": { "placeholder": "" } } },
+        { "field": "deptName", "title": "部门名称","span": 4,"itemRender": { "name": "$input", "props": { "placeholder": "" } }},
+        { "field": "tenantName", "title": "租户名称:", "span": 4, "itemRender": { "name": "$input", "props": { "placeholder": "" } } },
+        { "span": 4, "align": "center", "collapseNode": false, "itemRender": { "name": "$buttons", "children": [{ "props": { "type": "submit", "content": "查询", "status": "primary"} }, { "props": { "type": "reset", "content": "重置" } }] } }
+    ],
+    "formItems":[
+        { "field": "userName", "title": "账号","required": true, "span": 8, "itemRender": { "name": "$input", "props": { "placeholder": "" } } },
+        { "field": "realName", "title": "真实姓名","required": true, "span": 8, "itemRender": { "name": "$input", "props": { "placeholder": "" } } },
+        { "field": "mobile", "title": "手机号","required": true, "span": 8, "itemRender": { "name": "$input", "props": { "placeholder": "" } } },
+        { "field": "sex", "title": "性别","required": true, "span": 8, "dictCode":"sex" },
+        { "field": "status", "title": "状态","required": true, "span": 8, "dictCode":"userStatus" },
+        { "field": "memo", "title": "备注", "required": false,"span": 8, "itemRender": { "name": "$input", "props": { "placeholder": "" ,"disabled":false} } },
+        { "field": "deptName", "title": "部门名称", "required": true,"span": 16, 
+            "itemRender": { "name": "FormEditEtlModal", "etlId": "dept","resultMap":{"deptId":"deptId","deptName":"deptName"}} 
+        },
+        { "field": "deptId", "title": "部门ID", "required": true,"span": 8, "itemRender": { "name": "$input", "props": { "placeholder": "" ,"disabled":true} } },
+        { "field": "tenantName", "title": "租户名称", "required": true,"span": 16, 
+            "itemRender": { "name": "FormEditEtlModal", "etlId": "tenant","resultMap":{"tenantId":"tenantId","tenantName":"tenantName"}} 
+        },
+        { "field": "tenantId", "title": "租户ID", "required": true,"span": 8, "itemRender": { "name": "$input", "props": { "placeholder": "" ,"disabled":true} } }
+
+
+
+    ]
+}

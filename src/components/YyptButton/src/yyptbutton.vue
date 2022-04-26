@@ -1,6 +1,6 @@
 <template>
   <div class="yypt-button">
-    <el-button plain size="small"  type="primary" @click="click"><svg-icon :iconClass= 'icon' v-if="icon != '' && icon != undefined "></svg-icon>{{buttonName}}</el-button>
+    <el-button  size="small"  type="primary" @click="click"><svg-icon :iconClass= 'icon' v-if="icon != '' && icon != undefined "></svg-icon>{{buttonName}}</el-button>
   </div>
 </template>
 

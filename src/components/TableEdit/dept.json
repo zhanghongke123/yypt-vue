@@ -1,0 +1,18 @@
+{
+    "title":"选择部门",
+    "queryUrl":"/sysdept/etlList",
+    "tableColumn":[
+        { "type": "checkbox", "width": 50 },
+        { "field": "deptId", "title": "部门ID","width": 150 },
+        { "field": "deptName", "title": "部门名称","width": 400  }
+    ],
+    "queryFormConfig": {
+        "titleWidth": 120,
+        "titleAlign": "right",
+        "items": [
+          { "field": "deptId", "title": "部门ID:", "span": 6, "itemRender": { "name": "$input", "props": { "placeholder": "" } } },
+          { "field": "deptName", "title": "部门名称:", "span": 6, "itemRender": { "name": "$input", "props": { "placeholder": "" } } },
+          { "span": 6, "align": "center", "collapseNode": false, "itemRender": { "name": "$buttons", "children": [{ "props": { "type": "submit", "content": "查询", "status": "primary"} }, { "props": { "type": "reset", "content": "重置" } }] } }
+        ]
+    }
+}

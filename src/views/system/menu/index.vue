@@ -158,15 +158,19 @@
     </el-row>
     
 
-   <el-dialog v-el-drag-dialog :title='dialogTitle' :visible.sync="dialogVisible">
-      <el-dialog
-      width="80%"
-      title="选择菜单的图标"
-      :visible.sync="menuiconVisible"
-      :modal-append-to-body = "false"
-      append-to-body >
-          <IconLib @getIcon='getMenuIcon'></IconLib>
-     </el-dialog>
+   <el-dialog v-el-drag-dialog 
+        :title='dialogTitle' 
+        :visible.sync="dialogVisible" 
+        :close-on-click-modal="false">
+            <el-dialog
+            width="80%"
+            title="选择菜单的图标"
+            :visible.sync="menuiconVisible"
+            :modal-append-to-body = "false"
+            :close-on-click-modal="false"
+            append-to-body >
+                <IconLib @getIcon='getMenuIcon'></IconLib>
+          </el-dialog>
      
 
     <el-form :model="menu" ref="menuForm" :rules="rules" label-width="80px" size='small'>
